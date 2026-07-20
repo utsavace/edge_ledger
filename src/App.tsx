@@ -640,7 +640,7 @@ export default function App() {
       <section className="panel">
         <div className="panel-head-group">
           <div className="panel-info">
-            <h2>{TABS[tab - 1].label}</h2>
+            <h2>{TABS.find(t => t.n === tab)?.label}</h2>
             <p>{DESC[tab]}</p>
           </div>
           {!needsScan && sourceRowsLen > 0 && (
