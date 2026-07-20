@@ -711,7 +711,7 @@ export default function App() {
                   ) : pnl && pnl.n > 0 ? (
                     <div>
                       <div style={{ fontSize: "14px", marginBottom: "6px" }}>
-                        <strong>{pnl.n}</strong> trades entered ({pnlScope === "all" ? "all 4 modules" : TABS[tab - 1].label}):{" "}
+                        <strong>{pnl.n}</strong> trades entered ({pnlScope === "all" ? "all 4 modules" : TABS.find(t => t.n === tab)?.label}):{" "}
                         <span className="text-success">{pnl.wins} win</span> · <span className="text-danger">{pnl.losses} loss</span> · <strong>{pnl.wr}% win rate</strong>
                       </div>
                       <div>
