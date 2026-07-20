@@ -1,0 +1,6 @@
+{
+  "name": "Edge Ledger",
+  "description": "Nifty 500 strategy optimizer, rounding-bottom screener & best-overall edge.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

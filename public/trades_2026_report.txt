@@ -1,0 +1,433 @@
+=========================================================================
+            NIFTY 500 EDGE - SIMULATION REPORT FROM 1 JAN 2026           
+=========================================================================
+
+Report generated on: 2026-07-20T08:47:26.882Z
+Strategy M1: Stochastic RSI Trend Filter
+Strategy M2: ConnorsRSI Oversold (Filtered for stocks with > 60% historical win-rate)
+
+-------------------------------------------------------------------------
+1. SUMMARY METRICS
+-------------------------------------------------------------------------
+STOCHASTIC RSI (M1):
+  Total Trades   : 9
+  Wins / Losses  : 8 / 1
+  Win Rate       : 88.89%
+  Net Return     : 70.32%
+  Avg per Trade  : 7.81%
+
+CONNORS RSI (M2 - Filt. >60% WR):
+  Total Trades   : 367
+  Wins / Losses  : 234 / 133
+  Win Rate       : 63.76%
+  Net Return     : 1097.92%
+  Avg per Trade  : 2.99%
+
+-------------------------------------------------------------------------
+2. MONTHLY BREAKDOWN
+-------------------------------------------------------------------------
+STOCHASTIC RSI (M1) MONTHLY:
+  2026-01 : Trades: 3 | Win Rate: 100.0% | Return: 32.62%
+  2026-02 : Trades: 3 | Win Rate: 66.7% | Return: 0.71%
+  2026-03 : Trades: 1 | Win Rate: 100.0% | Return: 4.46%
+  2026-04 : Trades: 1 | Win Rate: 100.0% | Return: 18.55%
+  2026-06 : Trades: 1 | Win Rate: 100.0% | Return: 13.98%
+
+CONNORS RSI (M2) MONTHLY:
+  2026-01 : Trades: 73 | Win Rate: 56.2% | Return: 52.24%
+  2026-02 : Trades: 29 | Win Rate: 62.1% | Return: 21.83%
+  2026-03 : Trades: 70 | Win Rate: 60.0% | Return: 320.64%
+  2026-04 : Trades: 14 | Win Rate: 50.0% | Return: -62.57%
+  2026-05 : Trades: 84 | Win Rate: 71.4% | Return: 485.99%
+  2026-06 : Trades: 60 | Win Rate: 63.3% | Return: 177.21%
+  2026-07 : Trades: 37 | Win Rate: 75.7% | Return: 102.58%
+
+
+=========================================================================
+3. DETAILED TRADE LOG - STOCHASTIC RSI (M1)
+=========================================================================
+Date Range               | Symbol        | Company Name                           | Entry    | Exit     | Return   | Result
+-------------------------------------------------------------------------------------------------------------------------
+2026-01-20 to 2026-02-12 | TRENT.NS      | Trent Ltd.                             | 2642     | 2857.07  | 7.94%      | WIN
+2026-01-29 to 2026-02-09 | ABREL.NS      | Aditya Birla Real Estate Ltd.          | 1295.5   | 1426.6   | 9.92%      | WIN
+2026-01-29 to 2026-02-09 | GODREJPROP.NS | Godrej Properties Ltd.                 | 1567     | 1801.4   | 14.76%     | WIN
+2026-02-02 to 2026-02-10 | BATAINDIA.NS  | Bata India Ltd.                        | 865.1    | 918.55   | 5.98%      | WIN
+2026-02-02 to 2026-02-27 | ONESOURCE.NS  | Onesource Specialty Pharma Ltd.        | 1200     | 1346.8   | 12.03%     | WIN
+2026-02-17 to 2026-04-15 | KPITTECH.NS   | KPIT Technologies Ltd.                 | 879      | 728.65   | -17.30%    | LOSS
+2026-03-27 to 2026-04-17 | ICICIPRULI.NS | ICICI Prudential Life Insurance Compan | 537      | 562      | 4.46%      | WIN
+2026-04-06 to 2026-04-10 | LODHA.NS      | Lodha Developers Ltd.                  | 696.05   | 826.55   | 18.55%     | WIN
+2026-06-03 to 2026-06-12 | JYOTICNC.NS   | Jyoti CNC Automation Ltd.              | 597.05   | 681.7    | 13.98%     | WIN
+
+
+=========================================================================
+4. DETAILED TRADE LOG - CONNORS RSI (M2)
+=========================================================================
+Date Range               | Symbol        | Company Name                           | Entry    | Exit     | Return   | Stock WR | Result
+----------------------------------------------------------------------------------------------------------------------------------
+2026-01-05 to 2026-05-25 | LEMONTREE.NS  | Lemon Tree Hotels Ltd.                 | 153.99   | 116.76   | -24.38%    | 66.7%    | LOSS
+2026-01-06 to 2026-05-08 | M&MFIN.NS     | Mahindra & Mahindra Financial Services | 386.1    | 339.1    | -12.37%    | 63.3%    | LOSS
+2026-01-08 to 2026-04-08 | MOTHERSON.NS  | Samvardhana Motherson International Lt | 118      | 118.11   | -0.11%     | 80.4%    | LOSS
+2026-01-08 to 2026-05-08 | NBCC.NS       | NBCC (India) Ltd.                      | 116      | 100.64   | -13.44%    | 69.7%    | LOSS
+2026-01-08 to 2026-05-06 | PTCIL.NS      | PTC Industries Ltd.                    | 17719    | 17221    | -3.01%     | 77.8%    | LOSS
+2026-01-08 to 2026-04-07 | VIJAYA.NS     | Vijaya Diagnostic Centre Ltd.          | 1031.2   | 928.85   | -10.13%    | 83.3%    | LOSS
+2026-01-09 to 2026-04-09 | BHEL.NS       | Bharat Heavy Electricals Ltd.          | 279      | 277.2    | -0.85%     | 65.9%    | LOSS
+2026-01-09 to 2026-05-25 | CANBK.NS      | Canara Bank                            | 150.4    | 133.7    | -11.30%    | 60.5%    | LOSS
+2026-01-09 to 2026-07-01 | CUB.NS        | City Union Bank Ltd.                   | 208.91   | 216.05   | 3.22%      | 67.9%    | WIN
+2026-01-09 to 2026-02-05 | FORCEMOT.NS   | Force Motors Ltd.                      | 19985    | 21090    | 5.33%      | 68.4%    | WIN
+2026-01-09 to 2026-04-08 | GRASIM.NS     | Grasim Industries Ltd.                 | 2799.8   | 2756.2   | -1.76%     | 67.3%    | LOSS
+2026-01-09 to 2026-01-28 | HINDALCO.NS   | Hindalco Industries Ltd.               | 902      | 998.2    | 10.47%     | 75.0%    | WIN
+2026-01-09 to 2026-01-14 | HINDZINC.NS   | Hindustan Zinc Ltd.                    | 588.15   | 654.2    | 11.03%     | 73.2%    | WIN
+2026-01-09 to 2026-02-04 | IDBI.NS       | IDBI Bank Ltd.                         | 104.05   | 109.16   | 4.71%      | 60.9%    | WIN
+2026-01-09 to 2026-01-29 | JINDALSTEL.NS | Jindal Steel Ltd.                      | 1014.9   | 1159.6   | 14.06%     | 66.7%    | WIN
+2026-01-09 to 2026-04-10 | JSL.NS        | Jindal Stainless Ltd.                  | 803.7    | 780.85   | -3.04%     | 64.4%    | LOSS
+2026-01-09 to 2026-07-20 | MSUMI.NS      | Motherson Sumi Wiring India Ltd.       | 48.44    | 39.63    | -18.39%    | 80.0%    | LOSS
+2026-01-09 to 2026-07-06 | PNBHOUSING.NS | PNB Housing Finance Ltd.               | 979.55   | 1089.8   | 11.06%     | 70.0%    | WIN
+2026-01-09 to 2026-02-10 | POONAWALLA.NS | Poonawalla Fincorp Ltd.                | 460.55   | 485.9    | 5.30%      | 71.7%    | WIN
+2026-01-09 to 2026-01-29 | TATASTEEL.NS  | Tata Steel Ltd.                        | 179.05   | 202.32   | 12.80%     | 69.6%    | WIN
+2026-01-09 to 2026-07-20 | UNOMINDA.NS   | UNO Minda Ltd.                         | 1270.1   | 1139.5   | -10.48%    | 62.5%    | LOSS
+2026-01-09 to 2026-01-30 | ZYDUSWELL.NS  | Zydus Wellness Ltd.                    | 454.45   | 448.3    | -1.55%     | 65.6%    | LOSS
+2026-01-12 to 2026-01-16 | 360ONE.NS     | 360 ONE WAM Ltd.                       | 1140.9   | 1197.7   | 4.78%      | 83.3%    | WIN
+2026-01-12 to 2026-02-03 | AJANTPHARM.NS | Ajanta Pharmaceuticals Ltd.            | 2758.1   | 2880.1   | 4.22%      | 81.4%    | WIN
+2026-01-12 to 2026-04-10 | CHOICEIN.NS   | Choice International Ltd.              | 820.2    | 702.35   | -14.57%    | 85.7%    | LOSS
+2026-01-12 to 2026-04-08 | CHOLAFIN.NS   | Cholamandalam Investment and Finance C | 1715     | 1554.3   | -9.57%     | 70.8%    | LOSS
+2026-01-12 to 2026-04-08 | ESCORTS.NS    | Escorts Kubota Ltd.                    | 3818.4   | 3059.5   | -20.07%    | 71.8%    | LOSS
+2026-01-12 to 2026-07-20 | GPIL.NS       | Godawari Power & Ispat Ltd.            | 259.45   | 244.8    | -5.85%     | 61.5%    | LOSS
+2026-01-12 to 2026-07-20 | GRAPHITE.NS   | Graphite India Ltd.                    | 628      | 628.75   | -0.08%     | 64.3%    | LOSS
+2026-01-12 to 2026-04-08 | HBLENGINE.NS  | HBL Engineering Ltd.                   | 875      | 718.35   | -18.10%    | 65.9%    | LOSS
+2026-01-12 to 2026-03-27 | HEG.NS        | H.E.G. Ltd.                            | 577      | 572.3    | -1.01%     | 65.1%    | LOSS
+2026-01-12 to 2026-04-21 | MANAPPURAM.NS | Manappuram Finance Ltd.                | 290.9    | 281.8    | -3.33%     | 71.1%    | LOSS
+2026-01-12 to 2026-04-08 | MARUTI.NS     | Maruti Suzuki India Ltd.               | 16456    | 13602    | -17.54%    | 60.4%    | LOSS
+2026-01-12 to 2026-02-03 | MINDACORP.NS  | Minda Corporation Ltd.                 | 577.5    | 581.55   | 0.50%      | 77.4%    | WIN
+2026-01-12 to 2026-02-27 | REDINGTON.NS  | Redington Ltd.                         | 273.3    | 280.45   | 2.42%      | 69.2%    | WIN
+2026-01-12 to 2026-04-08 | SHRIRAMFIN.NS | Shriram Finance Ltd.                   | 979      | 1023.2   | 4.31%      | 65.3%    | WIN
+2026-01-12 to 2026-02-19 | UPL.NS        | UPL Ltd.                               | 785      | 765.05   | -2.74%     | 61.2%    | LOSS
+2026-01-13 to 2026-02-11 | CRAFTSMAN.NS  | Craftsman Automation Ltd.              | 7522     | 8119     | 7.74%      | 76.9%    | WIN
+2026-01-13 to 2026-04-23 | GRANULES.NS   | Granules India Ltd.                    | 601      | 686.95   | 14.10%     | 65.2%    | WIN
+2026-01-13 to 2026-02-25 | LAURUSLABS.NS | Laurus Labs Ltd.                       | 1043.2   | 1076.35  | 2.98%      | 66.7%    | WIN
+2026-01-13 to 2026-04-10 | NAM-INDIA.NS  | Nippon Life India Asset Management Ltd | 864      | 955.25   | 10.36%     | 80.0%    | WIN
+2026-01-13 to 2026-02-26 | NAVA.NS       | Nava Ltd.                              | 570.45   | 601.05   | 5.16%      | 70.7%    | WIN
+2026-01-14 to 2026-01-29 | LT.NS         | Larsen & Toubro Ltd.                   | 3900     | 3932.9   | 0.64%      | 70.6%    | WIN
+2026-01-14 to 2026-02-25 | POLYCAB.NS    | Polycab India Ltd.                     | 7328     | 8348.5   | 13.73%     | 72.0%    | WIN
+2026-01-15 to 2026-04-10 | DIVISLAB.NS   | Divi's Laboratories Ltd.               | 6355.5   | 6116.5   | -3.96%     | 74.1%    | LOSS
+2026-01-15 to 2026-07-20 | SUNDARMFIN.NS | Sundaram Finance Ltd.                  | 5051.5   | 4421.6   | -12.67%    | 72.9%    | LOSS
+2026-01-19 to 2026-03-17 | ETERNAL.NS    | Eternal Ltd.                           | 288.5    | 234.63   | -18.87%    | 70.0%    | LOSS
+2026-01-20 to 2026-04-08 | ICICIBANK.NS  | ICICI Bank Ltd.                        | 1374.7   | 1309.2   | -4.96%     | 70.7%    | LOSS
+2026-01-20 to 2026-01-29 | OIL.NS        | Oil India Ltd.                         | 436.1    | 514.75   | 17.83%     | 62.5%    | WIN
+2026-01-20 to 2026-03-24 | PFOCUS.NS     | Prime Focus Ltd.                       | 219.47   | 308.8    | 40.50%     | 63.6%    | WIN
+2026-01-20 to 2026-04-07 | PHOENIXLTD.NS | Phoenix Mills Ltd.                     | 1852.8   | 1597     | -14.01%    | 74.0%    | LOSS
+2026-01-20 to 2026-04-06 | TITAN.NS      | Titan Company Ltd.                     | 4155     | 4246.1   | 1.99%      | 75.4%    | WIN
+2026-01-21 to 2026-02-11 | ABSLAMC.NS    | Aditya Birla Sun Life AMC Ltd.         | 784      | 860.85   | 9.60%      | 83.3%    | WIN
+2026-01-21 to 2026-04-22 | AIIL.NS       | Authum Investment & Infrastructure Ltd | 595      | 484.8    | -18.72%    | 75.0%    | LOSS
+2026-01-21 to 2026-07-20 | ASAHIINDIA.NS | Asahi India Glass Ltd.                 | 905.6    | 881.35   | -2.88%     | 69.8%    | LOSS
+2026-01-21 to 2026-04-08 | BAJAJ-AUTO.NS | Bajaj Auto Ltd.                        | 9150     | 9366     | 2.16%      | 66.7%    | WIN
+2026-01-21 to 2026-04-17 | CHENNPETRO.NS | Chennai Petroleum Corporation Ltd.     | 802      | 1041.85  | 29.71%     | 71.1%    | WIN
+2026-01-21 to 2026-02-05 | GESHIP.NS     | Great Eastern Shipping Co. Ltd.        | 1074.7   | 1266.1   | 17.61%     | 61.8%    | WIN
+2026-01-21 to 2026-02-26 | INDUSINDBK.NS | IndusInd Bank Ltd.                     | 908      | 964.6    | 6.03%      | 77.3%    | WIN
+2026-01-21 to 2026-01-29 | INDUSTOWER.NS | Indus Towers Ltd.                      | 411.05   | 441.55   | 7.22%      | 61.3%    | WIN
+2026-01-21 to 2026-07-20 | JSWSTEEL.NS   | JSW Steel Ltd.                         | 1163.5   | 1260.8   | 8.16%      | 82.7%    | WIN
+2026-01-21 to 2026-01-27 | KARURVYSYA.NS | Karur Vysya Bank Ltd.                  | 255.1    | 292.55   | 14.48%     | 67.3%    | WIN
+2026-01-21 to 2026-02-03 | KEI.NS        | KEI Industries Ltd.                    | 4063     | 4367     | 7.28%      | 69.2%    | WIN
+2026-01-21 to 2026-01-29 | NTPC.NS       | NTPC Ltd.                              | 338.8    | 358.15   | 5.51%      | 67.5%    | WIN
+2026-01-22 to 2026-04-17 | 360ONE.NS     | 360 ONE WAM Ltd.                       | 1103     | 1113.3   | 0.73%      | 83.3%    | WIN
+2026-01-22 to 2026-05-05 | ABCAPITAL.NS  | Aditya Birla Capital Ltd.              | 351.9    | 360.85   | 2.34%      | 71.4%    | WIN
+2026-01-22 to 2026-01-27 | APLAPOLLO.NS  | APL Apollo Tubes Ltd.                  | 1899     | 2060.6   | 8.31%      | 74.4%    | WIN
+2026-01-22 to 2026-07-20 | BANKBARODA.NS | Bank of Baroda                         | 301.95   | 252.2    | -16.68%    | 60.5%    | LOSS
+2026-01-22 to 2026-02-26 | LUPIN.NS      | Lupin Ltd.                             | 2149     | 2323.2   | 7.91%      | 71.7%    | WIN
+2026-01-22 to 2026-01-28 | MCX.NS        | Multi Commodity Exchange of India Ltd. | 2375     | 2593     | 8.98%      | 65.5%    | WIN
+2026-01-22 to 2026-02-18 | PNB.NS        | Punjab National Bank                   | 124.74   | 128.17   | 2.55%      | 62.8%    | WIN
+2026-01-23 to 2026-06-03 | IIFL.NS       | IIFL Finance Ltd.                      | 550      | 498.8    | -9.51%     | 72.3%    | LOSS
+2026-01-28 to 2026-03-27 | EMCURE.NS     | Emcure Pharmaceuticals Ltd.            | 1495     | 1652.7   | 10.35%     | 100.0%   | WIN
+2026-02-03 to 2026-04-07 | HINDALCO.NS   | Hindalco Industries Ltd.               | 950      | 954.5    | 0.27%      | 75.0%    | WIN
+2026-02-03 to 2026-02-25 | HINDZINC.NS   | Hindustan Zinc Ltd.                    | 635.9    | 619.05   | -2.85%     | 73.2%    | LOSS
+2026-02-03 to 2026-04-08 | INDIANB.NS    | Indian Bank                            | 875      | 956.5    | 9.11%      | 71.1%    | WIN
+2026-02-03 to 2026-02-25 | MAHABANK.NS   | Bank of Maharashtra                    | 64       | 74.08    | 15.55%     | 62.5%    | WIN
+2026-02-03 to 2026-02-10 | MARICO.NS     | Marico Ltd.                            | 735      | 764.85   | 3.86%      | 80.4%    | WIN
+2026-02-03 to 2026-02-12 | MUTHOOTFIN.NS | Muthoot Finance Ltd.                   | 3725     | 4066.9   | 8.98%      | 67.6%    | WIN
+2026-02-03 to 2026-03-05 | NATIONALUM.NS | National Aluminium Co. Ltd.            | 389.9    | 395.95   | 1.35%      | 70.3%    | WIN
+2026-02-03 to 2026-04-07 | VEDL.NS       | Vedanta Ltd.                           | 695      | 713.25   | 2.43%      | 70.7%    | WIN
+2026-02-05 to 2026-03-18 | TECHM.NS      | Tech Mahindra Ltd.                     | 1630.1   | 1385.2   | -15.22%    | 67.6%    | LOSS
+2026-02-06 to 2026-07-20 | GRSE.NS       | Garden Reach Shipbuilders & Engineers  | 2420     | 2564     | 5.75%      | 78.9%    | WIN
+2026-02-09 to 2026-04-17 | ECLERX.NS     | eClerx Services Ltd.                   | 2112.5   | 1631.1   | -22.99%    | 78.0%    | LOSS
+2026-02-09 to 2026-03-24 | PERSISTENT.NS | Persistent Systems Ltd.                | 5881.5   | 4913.7   | -16.65%    | 72.2%    | LOSS
+2026-02-11 to 2026-04-08 | FEDERALBNK.NS | Federal Bank Ltd.                      | 281.9    | 284.45   | 0.70%      | 72.2%    | WIN
+2026-02-12 to 2026-05-12 | OIL.NS        | Oil India Ltd.                         | 480.8    | 490.95   | 1.91%      | 62.5%    | WIN
+2026-02-13 to 2026-02-25 | TIMKEN.NS     | Timken India Ltd.                      | 3081     | 3330.6   | 7.90%      | 67.4%    | WIN
+2026-02-16 to 2026-04-22 | AARTIIND.NS   | Aarti Industries Ltd.                  | 446.4    | 470.4    | 5.18%      | 76.7%    | WIN
+2026-02-16 to 2026-04-29 | GESHIP.NS     | Great Eastern Shipping Co. Ltd.        | 1293.9   | 1554.6   | 19.95%     | 61.8%    | WIN
+2026-02-16 to 2026-07-20 | MUTHOOTFIN.NS | Muthoot Finance Ltd.                   | 3580     | 2968.2   | -17.29%    | 67.6%    | LOSS
+2026-02-16 to 2026-02-27 | PETRONET.NS   | Petronet LNG Ltd.                      | 288.3    | 323.4    | 11.97%     | 68.9%    | WIN
+2026-02-17 to 2026-07-20 | BALKRISIND.NS | Balkrishna Industries Ltd.             | 2576.1   | 2066.5   | -19.98%    | 64.6%    | LOSS
+2026-02-17 to 2026-04-15 | BSE.NS        | BSE Ltd.                               | 2809.9   | 3390.7   | 20.47%     | 76.5%    | WIN
+2026-02-18 to 2026-04-13 | MCX.NS        | Multi Commodity Exchange of India Ltd. | 2281.2   | 2765.6   | 21.03%     | 65.5%    | WIN
+2026-02-20 to 2026-07-20 | HDFCAMC.NS    | HDFC Asset Management Company Ltd.     | 2742.3   | 2616.9   | -4.77%     | 68.4%    | LOSS
+2026-02-20 to 2026-07-20 | LTFOODS.NS    | LT Foods Ltd.                          | 414.45   | 383.75   | -7.61%     | 65.1%    | LOSS
+2026-02-20 to 2026-05-22 | MINDACORP.NS  | Minda Corporation Ltd.                 | 572.85   | 574.65   | 0.11%      | 77.4%    | WIN
+2026-02-20 to 2026-05-26 | SHYAMMETL.NS  | Shyam Metalics and Energy Ltd.         | 857.35   | 979.1    | 14.00%     | 78.6%    | WIN
+2026-02-20 to 2026-04-22 | ULTRACEMCO.NS | UltraTech Cement Ltd.                  | 12650    | 12193    | -3.81%     | 65.0%    | LOSS
+2026-02-20 to 2026-04-01 | ZFCVINDIA.NS  | ZF Commercial Vehicle Control Systems  | 2516.83  | 2395.83  | -5.01%     | 73.1%    | LOSS
+2026-02-26 to 2026-07-20 | INDUSTOWER.NS | Indus Towers Ltd.                      | 462.7    | 405.75   | -12.51%    | 61.3%    | LOSS
+2026-03-02 to 2026-07-20 | CIEINDIA.NS   | CIE Automotive India Ltd.              | 457.2    | 476.1    | 3.93%      | 73.5%    | WIN
+2026-03-02 to 2026-04-08 | CRAFTSMAN.NS  | Craftsman Automation Ltd.              | 7250     | 7351.5   | 1.20%      | 76.9%    | WIN
+2026-03-02 to 2026-05-05 | MARICO.NS     | Marico Ltd.                            | 770.1    | 807.2    | 4.62%      | 80.4%    | WIN
+2026-03-04 to 2026-04-08 | ELGIEQUIP.NS  | Elgi Equipments Ltd.                   | 508.05   | 499      | -1.98%     | 71.7%    | LOSS
+2026-03-04 to 2026-07-20 | FORCEMOT.NS   | Force Motors Ltd.                      | 22840    | 18244    | -20.32%    | 68.4%    | LOSS
+2026-03-04 to 2026-04-09 | HONASA.NS     | Honasa Consumer Ltd.                   | 285.75   | 332.35   | 16.11%     | 75.0%    | WIN
+2026-03-04 to 2026-05-07 | KARURVYSYA.NS | Karur Vysya Bank Ltd.                  | 313.35   | 313.55   | -0.14%     | 67.3%    | LOSS
+2026-03-04 to 2026-07-20 | LT.NS         | Larsen & Toubro Ltd.                   | 3950     | 3822.2   | -3.44%     | 70.6%    | LOSS
+2026-03-04 to 2026-06-18 | NYKAA.NS      | FSN E-Commerce Ventures Ltd.           | 252.55   | 298.1    | 17.84%     | 75.0%    | WIN
+2026-03-04 to 2026-04-09 | PFC.NS        | Power Finance Corporation Ltd.         | 400      | 428.05   | 6.81%      | 68.8%    | WIN
+2026-03-04 to 2026-07-20 | PNB.NS        | Punjab National Bank                   | 124.37   | 109.56   | -12.11%    | 62.8%    | LOSS
+2026-03-04 to 2026-04-08 | RAMCOCEM.NS   | The Ramco Cements Ltd.                 | 1075.9   | 993.25   | -7.88%     | 67.3%    | LOSS
+2026-03-04 to 2026-07-20 | RBLBANK.NS    | RBL Bank Ltd.                          | 306.5    | 367.3    | 19.64%     | 65.0%    | WIN
+2026-03-04 to 2026-04-08 | SONACOMS.NS   | Sona BLW Precision Forgings Ltd.       | 502.2    | 533.7    | 6.07%      | 88.9%    | WIN
+2026-03-04 to 2026-05-07 | SYRMA.NS      | Syrma SGS Technology Ltd.              | 763      | 1093.4   | 43.10%     | 62.5%    | WIN
+2026-03-05 to 2026-04-22 | 3MINDIA.NS    | 3M India Ltd.                          | 34690    | 32550    | -6.37%     | 63.0%    | LOSS
+2026-03-05 to 2026-04-08 | ABB.NS        | ABB India Ltd.                         | 5844     | 6565     | 12.14%     | 65.0%    | WIN
+2026-03-05 to 2026-07-20 | ALKEM.NS      | Alkem Laboratories Ltd.                | 5476.5   | 5663     | 3.21%      | 65.4%    | WIN
+2026-03-05 to 2026-03-27 | APARINDS.NS   | Apar Industries Ltd.                   | 10174    | 10608    | 4.07%      | 75.0%    | WIN
+2026-03-05 to 2026-07-20 | APLAPOLLO.NS  | APL Apollo Tubes Ltd.                  | 2126     | 1811.3   | -15.00%    | 74.4%    | LOSS
+2026-03-05 to 2026-04-08 | ASHOKLEY.NS   | Ashok Leyland Ltd.                     | 201.04   | 172.48   | -14.41%    | 60.9%    | LOSS
+2026-03-05 to 2026-04-08 | AXISBANK.NS   | Axis Bank Ltd.                         | 1354.9   | 1333     | -1.82%     | 60.8%    | LOSS
+2026-03-05 to 2026-04-08 | BHARATFORG.NS | Bharat Forge Ltd.                      | 1900     | 1781.4   | -6.44%     | 71.4%    | LOSS
+2026-03-05 to 2026-05-06 | BIOCON.NS     | Biocon Ltd.                            | 380.3    | 380.6    | -0.12%     | 78.0%    | LOSS
+2026-03-05 to 2026-04-15 | BLUESTARCO.NS | Blue Star Ltd.                         | 1845.8   | 1804.9   | -2.42%     | 80.4%    | LOSS
+2026-03-05 to 2026-04-08 | CGPOWER.NS    | CG Power and Industrial Solutions Ltd. | 689      | 726.3    | 5.21%      | 67.9%    | WIN
+2026-03-05 to 2026-04-10 | CUMMINSIND.NS | Cummins India Ltd.                     | 4629     | 5138.7   | 10.81%     | 68.8%    | WIN
+2026-03-05 to 2026-04-10 | EICHERMOT.NS  | Eicher Motors Ltd.                     | 7705     | 7424     | -3.85%     | 63.9%    | LOSS
+2026-03-05 to 2026-04-16 | ENGINERSIN.NS | Engineers India Ltd.                   | 205.15   | 228.32   | 11.09%     | 65.9%    | WIN
+2026-03-05 to 2026-04-21 | FORTIS.NS     | Fortis Healthcare Ltd.                 | 916.8    | 916.6    | -0.22%     | 68.9%    | LOSS
+2026-03-05 to 2026-04-23 | GLENMARK.NS   | Glenmark Pharmaceuticals Ltd.          | 2042.2   | 2335     | 14.14%     | 76.0%    | WIN
+2026-03-05 to 2026-06-17 | IDBI.NS       | IDBI Bank Ltd.                         | 111.02   | 90.36    | -18.81%    | 60.9%    | LOSS
+2026-03-05 to 2026-05-25 | INDUSINDBK.NS | IndusInd Bank Ltd.                     | 930.05   | 926.1    | -0.62%     | 77.3%    | LOSS
+2026-03-05 to 2026-07-20 | IOC.NS        | Indian Oil Corporation Ltd.            | 171      | 141.42   | -17.50%    | 66.7%    | LOSS
+2026-03-05 to 2026-04-17 | JINDALSTEL.NS | Jindal Steel Ltd.                      | 1172.3   | 1270     | 8.13%      | 66.7%    | WIN
+2026-03-05 to 2026-05-11 | LAURUSLABS.NS | Laurus Labs Ltd.                       | 1037     | 1266.8   | 21.96%     | 66.7%    | WIN
+2026-03-05 to 2026-04-21 | MAHABANK.NS   | Bank of Maharashtra                    | 69       | 80.18    | 16.00%     | 62.5%    | WIN
+2026-03-05 to 2026-04-10 | MFSL.NS       | Max Financial Services Ltd.            | 1764.2   | 1654.8   | -6.40%     | 68.5%    | LOSS
+2026-03-05 to 2026-04-13 | NTPC.NS       | NTPC Ltd.                              | 366.95   | 386.25   | 5.06%      | 67.5%    | WIN
+2026-03-05 to 2026-07-20 | POWERGRID.NS  | Power Grid Corporation of India Ltd.   | 292      | 286.65   | -2.03%     | 71.9%    | LOSS
+2026-03-05 to 2026-04-09 | POWERINDIA.NS | Hitachi Energy India Ltd.              | 24700    | 27315    | 10.39%     | 63.2%    | WIN
+2026-03-05 to 2026-04-28 | RRKABEL.NS    | R R Kabel Ltd.                         | 1492     | 1609     | 7.64%      | 87.5%    | WIN
+2026-03-05 to 2026-04-08 | SBILIFE.NS    | SBI Life Insurance Company Ltd.        | 1947.6   | 1907.6   | -2.25%     | 66.7%    | LOSS
+2026-03-05 to 2026-04-20 | SCHAEFFLER.NS | Schaeffler India Ltd.                  | 4158     | 4086.7   | -1.91%     | 63.8%    | LOSS
+2026-03-05 to 2026-04-08 | SCHNEIDER.NS  | Schneider Electric Infrastructure Ltd. | 832.75   | 973.8    | 16.74%     | 65.4%    | WIN
+2026-03-05 to 2026-04-08 | TATASTEEL.NS  | Tata Steel Ltd.                        | 198.5    | 204.18   | 2.66%      | 69.6%    | WIN
+2026-03-05 to 2026-05-08 | TIMKEN.NS     | Timken India Ltd.                      | 3237     | 3595     | 10.86%     | 67.4%    | WIN
+2026-03-05 to 2026-04-17 | TORNTPOWER.NS | Torrent Power Ltd.                     | 1479.9   | 1565     | 5.55%      | 71.8%    | WIN
+2026-03-05 to 2026-04-10 | TVSMOTOR.NS   | TVS Motor Company Ltd.                 | 3775     | 3839.9   | 1.52%      | 73.6%    | WIN
+2026-03-05 to 2026-05-25 | UNIONBANK.NS  | Union Bank of India                    | 193.03   | 168.87   | -12.72%    | 71.8%    | LOSS
+2026-03-05 to 2026-04-13 | VOLTAS.NS     | Voltas Ltd.                            | 1438.9   | 1361.6   | -5.57%     | 73.8%    | LOSS
+2026-03-11 to 2026-04-08 | KEI.NS        | KEI Industries Ltd.                    | 4537     | 4507.2   | -0.86%     | 69.2%    | LOSS
+2026-03-11 to 2026-04-08 | POLYCAB.NS    | Polycab India Ltd.                     | 7690     | 7600.5   | -1.36%     | 72.0%    | LOSS
+2026-03-12 to 2026-04-22 | FINCABLES.NS  | Finolex Cables Ltd.                    | 885      | 975.8    | 10.06%     | 70.6%    | WIN
+2026-03-13 to 2026-04-15 | APOLLOHOSP.NS | Apollo Hospitals Enterprise Ltd.       | 7556     | 7642     | 0.94%      | 71.7%    | WIN
+2026-03-16 to 2026-06-05 | ACUTAAS.NS    | Acutaas Chemicals Ltd.                 | 2062.2   | 3328.3   | 61.20%     | 81.8%    | WIN
+2026-03-16 to 2026-04-01 | ANANDRATHI.NS | Anand Rathi Wealth Ltd.                | 1525     | 1557.3   | 1.92%      | 75.0%    | WIN
+2026-03-16 to 2026-04-23 | DATAPATTNS.NS | Data Patterns (India) Ltd.             | 3215.3   | 4135.1   | 28.41%     | 77.8%    | WIN
+2026-03-16 to 2026-06-19 | GVT&D.NS      | GE Vernova T&D India Ltd.              | 3575     | 5533.5   | 54.58%     | 71.4%    | WIN
+2026-03-16 to 2026-05-06 | HINDZINC.NS   | Hindustan Zinc Ltd.                    | 548      | 634.6    | 15.60%     | 73.2%    | WIN
+2026-03-16 to 2026-04-23 | SAILIFE.NS    | Sai Life Sciences Ltd.                 | 953.1    | 1041.6   | 9.09%      | 100.0%   | WIN
+2026-03-17 to 2026-04-01 | ASTERDM.NS    | Aster DM Healthcare Ltd.               | 657.05   | 687.9    | 4.50%      | 82.6%    | WIN
+2026-03-17 to 2026-07-20 | NATIONALUM.NS | National Aluminium Co. Ltd.            | 376      | 345.4    | -8.34%     | 70.3%    | LOSS
+2026-03-17 to 2026-06-22 | SUNPHARMA.NS  | Sun Pharmaceutical Industries Ltd.     | 1794.1   | 1862.9   | 3.63%      | 74.5%    | WIN
+2026-03-17 to 2026-05-06 | TORNTPHARM.NS | Torrent Pharmaceuticals Ltd.           | 4266.6   | 4358.3   | 1.95%      | 79.4%    | WIN
+2026-03-19 to 2026-04-09 | SOLARINDS.NS  | Solar Industries India Ltd.            | 13649    | 13928    | 1.84%      | 74.1%    | WIN
+2026-03-20 to 2026-07-20 | LUPIN.NS      | Lupin Ltd.                             | 2275     | 2466.7   | 8.23%      | 71.7%    | WIN
+2026-03-23 to 2026-04-15 | KIRLOSENG.NS  | Kirloskar Oil Eng Ltd.                 | 1366.2   | 1597     | 16.69%     | 69.0%    | WIN
+2026-03-24 to 2026-04-13 | AJANTPHARM.NS | Ajanta Pharmaceuticals Ltd.            | 2821.1   | 2897.3   | 2.50%      | 81.4%    | WIN
+2026-03-24 to 2026-07-20 | ASTRAL.NS     | Astral Ltd.                            | 1577.9   | 1390     | -12.11%    | 73.2%    | LOSS
+2026-04-01 to 2026-05-07 | LINDEINDIA.NS | Linde India Ltd.                       | 7089     | 7847.5   | 10.50%     | 65.3%    | WIN
+2026-04-02 to 2026-04-23 | IPCALAB.NS    | Ipca Laboratories Ltd.                 | 1504.9   | 1526.1   | 1.21%      | 75.0%    | WIN
+2026-04-10 to 2026-05-07 | CCL.NS        | CCL Products (I) Ltd.                  | 1085     | 1207.8   | 11.12%     | 71.4%    | WIN
+2026-04-10 to 2026-07-01 | PFOCUS.NS     | Prime Focus Ltd.                       | 321.55   | 232.06   | -28.03%    | 63.6%    | LOSS
+2026-04-24 to 2026-05-06 | SHRIRAMFIN.NS | Shriram Finance Ltd.                   | 1006.95  | 1004.1   | -0.48%     | 65.3%    | LOSS
+2026-04-24 to 2026-05-07 | TVSMOTOR.NS   | TVS Motor Company Ltd.                 | 3513     | 3706.7   | 5.31%      | 73.6%    | WIN
+2026-04-24 to 2026-07-20 | VEDL.NS       | Vedanta Ltd.                           | 734.95   | 259.85   | -64.84%    | 70.7%    | LOSS
+2026-04-27 to 2026-06-19 | ANANDRATHI.NS | Anand Rathi Wealth Ltd.                | 1791.6   | 1867.5   | 4.04%      | 75.0%    | WIN
+2026-04-27 to 2026-05-07 | BOSCHLTD.NS   | Bosch Ltd.                             | 36800    | 37895    | 2.78%      | 67.9%    | WIN
+2026-04-27 to 2026-07-20 | INDIACEM.NS   | India Cements Ltd.                     | 424      | 393.95   | -7.29%     | 62.2%    | LOSS
+2026-04-27 to 2026-06-17 | JSL.NS        | Jindal Stainless Ltd.                  | 769.5    | 727.9    | -5.61%     | 64.4%    | LOSS
+2026-04-28 to 2026-05-22 | AXISBANK.NS   | Axis Bank Ltd.                         | 1312     | 1285.4   | -2.23%     | 60.8%    | LOSS
+2026-04-28 to 2026-06-02 | CHENNPETRO.NS | Chennai Petroleum Corporation Ltd.     | 1002.4   | 1141.6   | 13.69%     | 71.1%    | WIN
+2026-04-29 to 2026-05-25 | ASHOKLEY.NS   | Ashok Leyland Ltd.                     | 168.35   | 164.08   | -2.74%     | 60.9%    | LOSS
+2026-05-01 to 2026-05-27 | ADANIENSOL.NS | Adani Energy Solutions Ltd.            | 1342.25  | 1540.1   | 14.54%     | 76.0%    | WIN
+2026-05-01 to 2026-07-20 | HEG.NS        | H.E.G. Ltd.                            | 596.05   | 584.35   | -2.16%     | 65.1%    | LOSS
+2026-05-01 to 2026-05-07 | HONASA.NS     | Honasa Consumer Ltd.                   | 340.6    | 354.6    | 3.91%      | 75.0%    | WIN
+2026-05-01 to 2026-07-10 | INDIANB.NS    | Indian Bank                            | 851.85   | 870.7    | 2.01%      | 71.1%    | WIN
+2026-05-01 to 2026-05-27 | JINDALSAW.NS  | Jindal Saw Ltd.                        | 222.75   | 246.07   | 10.27%     | 68.9%    | WIN
+2026-05-01 to 2026-07-20 | VOLTAS.NS     | Voltas Ltd.                            | 1430.4   | 1342.5   | -6.35%     | 73.8%    | LOSS
+2026-05-05 to 2026-06-17 | DMART.NS      | Avenue Supermarts Ltd.                 | 4380     | 4287.5   | -2.31%     | 60.9%    | LOSS
+2026-05-05 to 2026-07-02 | SONACOMS.NS   | Sona BLW Precision Forgings Ltd.       | 575.45   | 662.3    | 14.89%     | 88.9%    | WIN
+2026-05-06 to 2026-05-08 | TRITURBINE.NS | Triveni Turbine Ltd.                   | 560      | 597.9    | 6.57%      | 75.0%    | WIN
+2026-05-08 to 2026-07-20 | LLOYDSME.NS   | Lloyds Metals And Energy Ltd.          | 1726.2   | 1873.5   | 8.33%      | 100.0%   | WIN
+2026-05-11 to 2026-07-20 | CCL.NS        | CCL Products (I) Ltd.                  | 1113.1   | 1205.6   | 8.11%      | 71.4%    | WIN
+2026-05-11 to 2026-07-20 | VTL.NS        | Vardhman Textiles Ltd.                 | 575      | 633.6    | 9.99%      | 74.4%    | WIN
+2026-05-12 to 2026-05-27 | ABB.NS        | ABB India Ltd.                         | 6360     | 7219     | 13.31%     | 65.0%    | WIN
+2026-05-12 to 2026-05-26 | ATGL.NS       | Adani Total Gas Ltd.                   | 619.95   | 713.1    | 14.83%     | 80.0%    | WIN
+2026-05-12 to 2026-07-20 | CANFINHOME.NS | Can Fin Homes Ltd.                     | 856.1    | 866.5    | 1.01%      | 69.5%    | WIN
+2026-05-12 to 2026-07-06 | CGCL.NS       | Capri Global Capital Ltd.              | 191      | 242.38   | 26.70%     | 63.3%    | WIN
+2026-05-12 to 2026-07-20 | ENGINERSIN.NS | Engineers India Ltd.                   | 248.4    | 229.63   | -7.76%     | 65.9%    | LOSS
+2026-05-12 to 2026-05-27 | KIRLOSENG.NS  | Kirloskar Oil Eng Ltd.                 | 1650.1   | 1830     | 10.70%     | 69.0%    | WIN
+2026-05-12 to 2026-07-20 | SIEMENS.NS    | Siemens Ltd.                           | 3605     | 3644.3   | 0.89%      | 65.9%    | WIN
+2026-05-12 to 2026-05-26 | TATAINVEST.NS | Tata Investment Corporation Ltd.       | 692.35   | 694.6    | 0.12%      | 63.5%    | WIN
+2026-05-13 to 2026-07-20 | ABCAPITAL.NS  | Aditya Birla Capital Ltd.              | 340      | 398.55   | 17.02%     | 71.4%    | WIN
+2026-05-13 to 2026-05-14 | ADANIENT.NS   | Adani Enterprises Ltd.                 | 2401.1   | 2712.9   | 12.79%     | 74.1%    | WIN
+2026-05-13 to 2026-05-26 | ADANIPOWER.NS | Adani Power Ltd.                       | 209      | 244.53   | 16.80%     | 65.0%    | WIN
+2026-05-13 to 2026-05-19 | AIAENG.NS     | AIA Engineering Ltd.                   | 3770     | 4002.6   | 5.97%      | 73.7%    | WIN
+2026-05-13 to 2026-07-20 | AMBER.NS      | Amber Enterprises India Ltd.           | 8200     | 7831     | -4.70%     | 76.2%    | LOSS
+2026-05-13 to 2026-07-20 | BEL.NS        | Bharat Electronics Ltd.                | 416.6    | 407.7    | -2.34%     | 68.0%    | LOSS
+2026-05-13 to 2026-06-09 | BELRISE.NS    | Belrise Industries Ltd.                | 207      | 234.73   | 13.20%     | 100.0%   | WIN
+2026-05-13 to 2026-07-20 | BHARATFORG.NS | Bharat Forge Ltd.                      | 1912.9   | 2188     | 14.18%     | 71.4%    | WIN
+2026-05-13 to 2026-06-18 | CAMS.NS       | Computer Age Management Services Ltd.  | 780      | 832.8    | 6.57%      | 69.2%    | WIN
+2026-05-13 to 2026-06-15 | CREDITACC.NS  | CreditAccess Grameen Ltd.              | 1390.8   | 1375     | -1.34%     | 73.7%    | LOSS
+2026-05-13 to 2026-06-09 | DEEPAKFERT.NS | Deepak Fertilisers & Petrochemicals Co | 1226.7   | 1518.6   | 23.60%     | 60.8%    | WIN
+2026-05-13 to 2026-05-22 | ELECON.NS     | Elecon Engineering Co. Ltd.            | 491.7    | 533.25   | 8.25%      | 69.0%    | WIN
+2026-05-13 to 2026-05-20 | ELGIEQUIP.NS  | Elgi Equipments Ltd.                   | 522      | 565.25   | 8.09%      | 71.7%    | WIN
+2026-05-13 to 2026-06-09 | FEDERALBNK.NS | Federal Bank Ltd.                      | 285.9    | 315.1    | 10.01%     | 72.2%    | WIN
+2026-05-13 to 2026-07-20 | FLUOROCHEM.NS | Gujarat Fluorochemicals Ltd.           | 3660     | 4268.3   | 16.42%     | 64.7%    | WIN
+2026-05-13 to 2026-07-20 | GLENMARK.NS   | Glenmark Pharmaceuticals Ltd.          | 2245.2   | 2235     | -0.65%     | 76.0%    | LOSS
+2026-05-13 to 2026-07-20 | HAL.NS        | Hindustan Aeronautics Ltd.             | 4550     | 4465     | -2.07%     | 69.2%    | LOSS
+2026-05-13 to 2026-07-20 | HBLENGINE.NS  | HBL Engineering Ltd.                   | 784.4    | 730.2    | -7.11%     | 65.9%    | LOSS
+2026-05-13 to 2026-05-18 | IPCALAB.NS    | Ipca Laboratories Ltd.                 | 1518     | 1646.3   | 8.25%      | 75.0%    | WIN
+2026-05-13 to 2026-06-03 | J&KBANK.NS    | Jammu & Kashmir Bank Ltd.              | 130.69   | 148.65   | 13.54%     | 75.0%    | WIN
+2026-05-13 to 2026-07-20 | JINDALSTEL.NS | Jindal Steel Ltd.                      | 1219     | 1037.3   | -15.11%    | 66.7%    | LOSS
+2026-05-13 to 2026-07-20 | KARURVYSYA.NS | Karur Vysya Bank Ltd.                  | 283.2    | 308.75   | 8.82%      | 67.3%    | WIN
+2026-05-13 to 2026-06-16 | KPIL.NS       | Kalpataru Projects International Ltd.  | 1241     | 1365.7   | 9.85%      | 68.1%    | WIN
+2026-05-13 to 2026-06-18 | LINDEINDIA.NS | Linde India Ltd.                       | 7469.5   | 7275.5   | -2.80%     | 65.3%    | LOSS
+2026-05-13 to 2026-07-20 | MAHABANK.NS   | Bank of Maharashtra                    | 78.35    | 79.94    | 1.83%      | 62.5%    | WIN
+2026-05-13 to 2026-07-06 | MANAPPURAM.NS | Manappuram Finance Ltd.                | 301.55   | 346.1    | 14.57%     | 71.1%    | WIN
+2026-05-13 to 2026-07-20 | MOTHERSON.NS  | Samvardhana Motherson International Lt | 124      | 142.24   | 14.51%     | 80.4%    | WIN
+2026-05-13 to 2026-07-20 | NSLNISP.NS    | NMDC Steel Ltd.                        | 41.75    | 42.84    | 2.41%      | 66.7%    | WIN
+2026-05-13 to 2026-07-01 | PHOENIXLTD.NS | Phoenix Mills Ltd.                     | 1725     | 2018.5   | 16.81%     | 74.0%    | WIN
+2026-05-13 to 2026-07-20 | SARDAEN.NS    | Sarda Energy and Minerals Ltd.         | 563.4    | 502.85   | -10.95%    | 84.6%    | LOSS
+2026-05-13 to 2026-07-20 | SCHAEFFLER.NS | Schaeffler India Ltd.                  | 4089.9   | 4191.6   | 2.29%      | 63.8%    | WIN
+2026-05-13 to 2026-07-02 | SHRIRAMFIN.NS | Shriram Finance Ltd.                   | 925.2    | 1066.7   | 15.09%     | 65.3%    | WIN
+2026-05-13 to 2026-07-20 | TATAPOWER.NS  | Tata Power Co. Ltd.                    | 391      | 381.5    | -2.63%     | 68.1%    | LOSS
+2026-05-13 to 2026-05-21 | TECHNOE.NS    | Techno Electric & Engineering Company  | 1191.1   | 1294.3   | 8.46%      | 61.8%    | WIN
+2026-05-13 to 2026-07-14 | TORNTPOWER.NS | Torrent Power Ltd.                     | 1538.2   | 1465.3   | -4.94%     | 71.8%    | LOSS
+2026-05-13 to 2026-07-20 | VBL.NS        | Varun Beverages Ltd.                   | 485      | 461.3    | -5.09%     | 80.0%    | LOSS
+2026-05-14 to 2026-07-20 | ABSLAMC.NS    | Aditya Birla Sun Life AMC Ltd.         | 1042.8   | 1133.9   | 8.54%      | 83.3%    | WIN
+2026-05-14 to 2026-05-25 | EICHERMOT.NS  | Eicher Motors Ltd.                     | 7000     | 7414     | 5.71%      | 63.9%    | WIN
+2026-05-14 to 2026-07-20 | NEULANDLAB.NS | Neuland Laboratories Ltd.              | 16601    | 19030    | 14.43%     | 68.6%    | WIN
+2026-05-14 to 2026-05-20 | POWERINDIA.NS | Hitachi Energy India Ltd.              | 32100    | 35525    | 10.47%     | 63.2%    | WIN
+2026-05-14 to 2026-06-02 | SYRMA.NS      | Syrma SGS Technology Ltd.              | 1043     | 1166.8   | 11.67%     | 62.5%    | WIN
+2026-05-15 to 2026-05-21 | NIVABUPA.NS   | Niva Bupa Health Insurance Company Ltd | 80.44    | 83.62    | 3.75%      | 100.0%   | WIN
+2026-05-15 to 2026-07-06 | TVSMOTOR.NS   | TVS Motor Company Ltd.                 | 3455.6   | 3705     | 7.02%      | 73.6%    | WIN
+2026-05-15 to 2026-07-20 | ZFCVINDIA.NS  | ZF Commercial Vehicle Control Systems  | 2383.33  | 2378.9   | -0.39%     | 73.1%    | LOSS
+2026-05-18 to 2026-06-10 | NESTLEIND.NS  | Nestle India Ltd.                      | 1430.5   | 1438.3   | 0.35%      | 73.8%    | WIN
+2026-05-19 to 2026-06-15 | AARTIIND.NS   | Aarti Industries Ltd.                  | 460      | 498.15   | 8.09%      | 76.7%    | WIN
+2026-05-19 to 2026-05-27 | CGPOWER.NS    | CG Power and Industrial Solutions Ltd. | 811      | 934.8    | 15.07%     | 67.9%    | WIN
+2026-05-19 to 2026-07-20 | DATAPATTNS.NS | Data Patterns (India) Ltd.             | 3770     | 4047     | 7.15%      | 77.8%    | WIN
+2026-05-19 to 2026-07-16 | DEEPAKNTR.NS  | Deepak Nitrite Ltd.                    | 1768.5   | 1741.8   | -1.71%     | 71.7%    | LOSS
+2026-05-19 to 2026-05-27 | FINCABLES.NS  | Finolex Cables Ltd.                    | 1029.95  | 1177.25  | 14.10%     | 70.6%    | WIN
+2026-05-19 to 2026-06-15 | GABRIEL.NS    | Gabriel India Ltd.                     | 1063.4   | 1146.3   | 7.60%      | 72.1%    | WIN
+2026-05-19 to 2026-06-05 | HSCL.NS       | Himadri Speciality Chemical Ltd.       | 557      | 685.05   | 22.79%     | 67.6%    | WIN
+2026-05-19 to 2026-06-04 | JBMA.NS       | JBM Auto Ltd.                          | 620.7    | 692.8    | 11.42%     | 63.2%    | WIN
+2026-05-19 to 2026-07-20 | KIMS.NS       | Krishna Institute of Medical Sciences  | 722.5    | 793.05   | 9.56%      | 75.0%    | WIN
+2026-05-19 to 2026-07-20 | NAVA.NS       | Nava Ltd.                              | 601.25   | 580      | -3.73%     | 70.7%    | LOSS
+2026-05-19 to 2026-07-20 | PFC.NS        | Power Finance Corporation Ltd.         | 429.7    | 409.7    | -4.85%     | 68.8%    | LOSS
+2026-05-19 to 2026-06-15 | SCHNEIDER.NS  | Schneider Electric Infrastructure Ltd. | 1177.9   | 1216.2   | 3.05%      | 65.4%    | WIN
+2026-05-20 to 2026-07-07 | NATCOPHARM.NS | NATCO Pharma Ltd.                      | 1130.9   | 984.15   | -13.18%    | 70.6%    | LOSS
+2026-05-21 to 2026-07-20 | TATASTEEL.NS  | Tata Steel Ltd.                        | 209.75   | 186.45   | -11.31%    | 69.6%    | LOSS
+2026-05-22 to 2026-06-30 | ATHERENERG.NS | Ather Energy Ltd.                      | 898      | 1140.55  | 26.81%     | 100.0%   | WIN
+2026-05-25 to 2026-06-19 | VIJAYA.NS     | Vijaya Diagnostic Centre Ltd.          | 1240     | 1364.2   | 9.82%      | 83.3%    | WIN
+2026-05-26 to 2026-06-04 | IPCALAB.NS    | Ipca Laboratories Ltd.                 | 1566.2   | 1614     | 2.85%      | 75.0%    | WIN
+2026-05-26 to 2026-07-20 | OIL.NS        | Oil India Ltd.                         | 484.9    | 450.2    | -7.36%     | 62.5%    | LOSS
+2026-05-27 to 2026-06-15 | TECHNOE.NS    | Techno Electric & Engineering Company  | 1183.2   | 1079.9   | -8.93%     | 61.8%    | LOSS
+2026-06-01 to 2026-07-20 | BERGEPAINT.NS | Berger Paints India Ltd.               | 502      | 494.65   | -1.66%     | 75.5%    | LOSS
+2026-06-01 to 2026-07-20 | GESHIP.NS     | Great Eastern Shipping Co. Ltd.        | 1418.9   | 1382.8   | -2.74%     | 61.8%    | LOSS
+2026-06-02 to 2026-07-20 | ADANIPOWER.NS | Adani Power Ltd.                       | 230      | 217.77   | -5.52%     | 65.0%    | LOSS
+2026-06-02 to 2026-06-18 | BHEL.NS       | Bharat Heavy Electricals Ltd.          | 400      | 405.9    | 1.27%      | 65.9%    | WIN
+2026-06-02 to 2026-07-14 | DIVISLAB.NS   | Divi's Laboratories Ltd.               | 6510     | 7188.5   | 10.22%     | 74.1%    | WIN
+2026-06-02 to 2026-06-17 | FINCABLES.NS  | Finolex Cables Ltd.                    | 990      | 1120     | 12.93%     | 70.6%    | WIN
+2026-06-02 to 2026-07-03 | INDUSINDBK.NS | IndusInd Bank Ltd.                     | 893.3    | 974.35   | 8.87%      | 77.3%    | WIN
+2026-06-02 to 2026-07-20 | MARICO.NS     | Marico Ltd.                            | 794.9    | 853.2    | 7.13%      | 80.4%    | WIN
+2026-06-02 to 2026-07-20 | MFSL.NS       | Max Financial Services Ltd.            | 1600.1   | 1541.2   | -3.88%     | 68.5%    | LOSS
+2026-06-02 to 2026-07-20 | MOTILALOFS.NS | Motilal Oswal Financial Services Ltd.  | 841      | 956.95   | 13.59%     | 66.7%    | WIN
+2026-06-02 to 2026-07-20 | NTPC.NS       | NTPC Ltd.                              | 375.95   | 346.05   | -8.15%     | 67.5%    | LOSS
+2026-06-02 to 2026-07-20 | TATACONSUM.NS | Tata Consumer Products Ltd.            | 1126.5   | 1087.9   | -3.63%     | 66.0%    | LOSS
+2026-06-02 to 2026-07-20 | UNIONBANK.NS  | Union Bank of India                    | 161.05   | 173      | 7.22%      | 71.8%    | WIN
+2026-06-03 to 2026-07-20 | BIOCON.NS     | Biocon Ltd.                            | 415      | 438.35   | 5.43%      | 78.0%    | WIN
+2026-06-03 to 2026-07-20 | BSE.NS        | BSE Ltd.                               | 3935.5   | 3608.9   | -8.50%     | 76.5%    | LOSS
+2026-06-03 to 2026-06-24 | DRREDDY.NS    | Dr. Reddy's Laboratories Ltd.          | 1269.5   | 1328.4   | 4.44%      | 70.9%    | WIN
+2026-06-03 to 2026-06-24 | GODREJIND.NS  | Godrej Industries Ltd.                 | 1065.9   | 1152.7   | 7.94%      | 71.9%    | WIN
+2026-06-03 to 2026-07-20 | POWERINDIA.NS | Hitachi Energy India Ltd.              | 35350    | 32345    | -8.70%     | 63.2%    | LOSS
+2026-06-03 to 2026-06-15 | RAINBOW.NS    | Rainbow Childrens Medicare Ltd.        | 1340     | 1418.6   | 5.67%      | 90.0%    | WIN
+2026-06-04 to 2026-07-20 | HINDZINC.NS   | Hindustan Zinc Ltd.                    | 609      | 529.5    | -13.25%    | 73.2%    | LOSS
+2026-06-04 to 2026-07-20 | MCX.NS        | Multi Commodity Exchange of India Ltd. | 2837     | 2806     | -1.29%     | 65.5%    | LOSS
+2026-06-04 to 2026-07-20 | TIMKEN.NS     | Timken India Ltd.                      | 3491.9   | 3128.8   | -10.60%    | 67.4%    | LOSS
+2026-06-04 to 2026-07-20 | TRITURBINE.NS | Triveni Turbine Ltd.                   | 668.85   | 613.2    | -8.52%     | 75.0%    | LOSS
+2026-06-08 to 2026-07-20 | HINDALCO.NS   | Hindalco Industries Ltd.               | 1061     | 953.05   | -10.37%    | 75.0%    | LOSS
+2026-06-09 to 2026-07-20 | GRANULES.NS   | Granules India Ltd.                    | 767      | 883.5    | 14.99%     | 65.2%    | WIN
+2026-06-09 to 2026-07-20 | GRASIM.NS     | Grasim Industries Ltd.                 | 3070.2   | 3128.7   | 1.71%      | 67.3%    | WIN
+2026-06-09 to 2026-07-20 | JINDALSAW.NS  | Jindal Saw Ltd.                        | 236.1    | 263      | 11.19%     | 68.9%    | WIN
+2026-06-09 to 2026-07-14 | WELCORP.NS    | Welspun Corp Ltd.                      | 1348     | 1683.4   | 24.68%     | 63.8%    | WIN
+2026-06-11 to 2026-07-16 | ABB.NS        | ABB India Ltd.                         | 6782     | 7667.5   | 12.86%     | 65.0%    | WIN
+2026-06-11 to 2026-07-20 | CESC.NS       | CESC Ltd.                              | 167.31   | 166.2    | -0.86%     | 70.2%    | LOSS
+2026-06-11 to 2026-07-20 | TITAN.NS      | Titan Company Ltd.                     | 4020.1   | 4647.6   | 15.41%     | 75.4%    | WIN
+2026-06-11 to 2026-07-20 | WOCKPHARMA.NS | Wockhardt Ltd.                         | 1840     | 1891.4   | 2.59%      | 64.1%    | WIN
+2026-06-12 to 2026-07-06 | ADANIENSOL.NS | Adani Energy Solutions Ltd.            | 1499     | 1622.8   | 8.06%      | 76.0%    | WIN
+2026-06-12 to 2026-06-19 | AIAENG.NS     | AIA Engineering Ltd.                   | 4357     | 4687     | 7.37%      | 73.7%    | WIN
+2026-06-12 to 2026-06-19 | CARBORUNIV.NS | Carborundum Universal Ltd.             | 1002     | 1241.7   | 23.72%     | 66.7%    | WIN
+2026-06-12 to 2026-07-20 | NH.NS         | Narayana Hrudayalaya Ltd.              | 1869.5   | 2041.1   | 8.98%      | 75.0%    | WIN
+2026-06-12 to 2026-07-20 | ONESOURCE.NS  | Onesource Specialty Pharma Ltd.        | 1655.1   | 1689.6   | 1.88%      | 100.0%   | WIN
+2026-06-12 to 2026-07-20 | SAMMAANCAP.NS | Sammaan Capital Ltd.                   | 171      | 163.55   | -4.56%     | 68.0%    | LOSS
+2026-06-12 to 2026-07-20 | SOLARINDS.NS  | Solar Industries India Ltd.            | 17404    | 18911    | 8.46%      | 74.1%    | WIN
+2026-06-15 to 2026-06-30 | IPCALAB.NS    | Ipca Laboratories Ltd.                 | 1613     | 1701     | 5.26%      | 75.0%    | WIN
+2026-06-15 to 2026-07-20 | NESTLEIND.NS  | Nestle India Ltd.                      | 1410     | 1442.3   | 2.09%      | 73.8%    | WIN
+2026-06-16 to 2026-07-20 | AUROPHARMA.NS | Aurobindo Pharma Ltd.                  | 1408.4   | 1544.2   | 9.44%      | 75.0%    | WIN
+2026-06-16 to 2026-07-20 | BAJAJ-AUTO.NS | Bajaj Auto Ltd.                        | 9992     | 10475.5  | 4.64%      | 66.7%    | WIN
+2026-06-17 to 2026-07-20 | HONASA.NS     | Honasa Consumer Ltd.                   | 400.1    | 471.3    | 17.60%     | 75.0%    | WIN
+2026-06-18 to 2026-07-20 | ASTERDM.NS    | Aster DM Healthcare Ltd.               | 768      | 811.8    | 5.50%      | 82.6%    | WIN
+2026-06-18 to 2026-07-20 | FORTIS.NS     | Fortis Healthcare Ltd.                 | 956      | 958.95   | 0.11%      | 68.9%    | WIN
+2026-06-18 to 2026-07-20 | ZYDUSLIFE.NS  | Zydus Lifesciences Ltd.                | 1061.5   | 1160     | 9.08%      | 71.4%    | WIN
+2026-06-22 to 2026-07-20 | USHAMART.NS   | Usha Martin Ltd.                       | 472.9    | 501.95   | 5.94%      | 73.1%    | WIN
+2026-06-23 to 2026-07-16 | HSCL.NS       | Himadri Speciality Chemical Ltd.       | 660      | 722.35   | 9.25%      | 67.6%    | WIN
+2026-06-25 to 2026-07-20 | CGPOWER.NS    | CG Power and Industrial Solutions Ltd. | 919.45   | 912.5    | -0.96%     | 67.9%    | LOSS
+2026-06-25 to 2026-07-20 | CUMMINSIND.NS | Cummins India Ltd.                     | 5555.5   | 5493     | -1.33%     | 68.8%    | LOSS
+2026-06-25 to 2026-07-20 | GVT&D.NS      | GE Vernova T&D India Ltd.              | 5120     | 4456.1   | -13.17%    | 71.4%    | LOSS
+2026-06-25 to 2026-07-20 | POLYCAB.NS    | Polycab India Ltd.                     | 9700     | 8860     | -8.86%     | 72.0%    | LOSS
+2026-06-25 to 2026-07-20 | ZENTEC.NS     | Zen Technologies Ltd.                  | 1852     | 1746     | -5.92%     | 66.7%    | LOSS
+2026-06-26 to 2026-07-20 | AIIL.NS       | Authum Investment & Infrastructure Ltd | 518      | 553.3    | 6.61%      | 75.0%    | WIN
+2026-06-26 to 2026-07-20 | IIFL.NS       | IIFL Finance Ltd.                      | 509.7    | 555.95   | 8.87%      | 72.3%    | WIN
+2026-06-26 to 2026-07-20 | KEI.NS        | KEI Industries Ltd.                    | 5268     | 4888.5   | -7.40%     | 69.2%    | LOSS
+2026-06-26 to 2026-07-20 | LINDEINDIA.NS | Linde India Ltd.                       | 7021.5   | 7082     | 0.66%      | 65.3%    | WIN
+2026-06-26 to 2026-07-20 | NIVABUPA.NS   | Niva Bupa Health Insurance Company Ltd | 84.79    | 86       | 1.23%      | 100.0%   | WIN
+2026-06-26 to 2026-07-20 | TIINDIA.NS    | Tube Investments of India Ltd.         | 3054     | 2882.8   | -5.81%     | 84.0%    | LOSS
+2026-07-01 to 2026-07-20 | EICHERMOT.NS  | Eicher Motors Ltd.                     | 7073.5   | 7519     | 6.10%      | 63.9%    | WIN
+2026-07-01 to 2026-07-20 | TATATECH.NS   | Tata Technologies Ltd.                 | 670      | 740.45   | 10.31%     | 100.0%   | WIN
+2026-07-01 to 2026-07-20 | ZEEL.NS       | Zee Entertainment Enterprises Ltd.     | 105      | 107.01   | 1.71%      | 73.2%    | WIN
+2026-07-02 to 2026-07-20 | APARINDS.NS   | Apar Industries Ltd.                   | 14598    | 13756    | -5.97%     | 75.0%    | LOSS
+2026-07-03 to 2026-07-20 | CPPLUS.NS     | Aditya Infotech Ltd.                   | 3490     | 3571.4   | 2.13%      | 100.0%   | WIN
+2026-07-03 to 2026-07-20 | DMART.NS      | Avenue Supermarts Ltd.                 | 4090     | 3979.7   | -2.90%     | 60.9%    | LOSS
+2026-07-06 to 2026-07-20 | BHEL.NS       | Bharat Heavy Electricals Ltd.          | 384      | 415.05   | 7.89%      | 65.9%    | WIN
+2026-07-06 to 2026-07-20 | CRAFTSMAN.NS  | Craftsman Automation Ltd.              | 9110     | 9346.5   | 2.40%      | 76.9%    | WIN
+2026-07-06 to 2026-07-20 | FINCABLES.NS  | Finolex Cables Ltd.                    | 1101.3   | 1014.7   | -8.06%     | 70.6%    | LOSS
+2026-07-06 to 2026-07-09 | KIRLOSENG.NS  | Kirloskar Oil Eng Ltd.                 | 2294     | 2424.8   | 5.50%      | 69.0%    | WIN
+2026-07-06 to 2026-07-20 | THERMAX.NS    | Thermax Ltd.                           | 4590     | 4707.5   | 2.36%      | 64.4%    | WIN
+2026-07-07 to 2026-07-20 | BELRISE.NS    | Belrise Industries Ltd.                | 223      | 232.47   | 4.05%      | 100.0%   | WIN
+2026-07-07 to 2026-07-20 | HONAUT.NS     | Honeywell Automation India Ltd.        | 38700    | 38210    | -1.47%     | 64.3%    | LOSS
+2026-07-07 to 2026-07-20 | TEJASNET.NS   | Tejas Networks Ltd.                    | 570      | 539.4    | -5.57%     | 64.3%    | LOSS
+2026-07-08 to 2026-07-20 | CHENNPETRO.NS | Chennai Petroleum Corporation Ltd.     | 1086.1   | 1221.5   | 12.27%     | 71.1%    | WIN
+2026-07-08 to 2026-07-20 | JBMA.NS       | JBM Auto Ltd.                          | 665      | 664.65   | -0.25%     | 63.2%    | LOSS
+2026-07-08 to 2026-07-13 | RRKABEL.NS    | R R Kabel Ltd.                         | 2190     | 2374.8   | 8.24%      | 87.5%    | WIN
+2026-07-08 to 2026-07-20 | TITAGARH.NS   | Titagarh Rail Systems Ltd.             | 846.95   | 850.25   | 0.19%      | 69.7%    | WIN
+2026-07-09 to 2026-07-20 | AEGISLOG.NS   | Aegis Logistics Ltd.                   | 1240     | 1415.9   | 13.99%     | 72.9%    | WIN
+2026-07-09 to 2026-07-17 | ANTHEM.NS     | Anthem Biosciences Ltd.                | 757.95   | 777      | 2.31%      | 100.0%   | WIN
+2026-07-09 to 2026-07-20 | DEEPAKFERT.NS | Deepak Fertilisers & Petrochemicals Co | 1538     | 1579.5   | 2.50%      | 60.8%    | WIN
+2026-07-09 to 2026-07-20 | GAIL.NS       | GAIL (India) Ltd.                      | 169      | 173.13   | 2.24%      | 76.6%    | WIN
+2026-07-09 to 2026-07-20 | ICICIBANK.NS  | ICICI Bank Ltd.                        | 1382.9   | 1453.7   | 4.92%      | 70.7%    | WIN
+2026-07-09 to 2026-07-20 | INDIGO.NS     | InterGlobe Aviation Ltd.               | 5124     | 5197     | 1.22%      | 76.0%    | WIN
+2026-07-09 to 2026-07-13 | JSWINFRA.NS   | JSW Infrastructure Ltd.                | 314.75   | 351.2    | 11.38%     | 80.0%    | WIN
+2026-07-09 to 2026-07-20 | KPRMILL.NS    | K.P.R. Mill Ltd.                       | 1120     | 1138     | 1.41%      | 70.0%    | WIN
+2026-07-09 to 2026-07-20 | MAXHEALTH.NS  | Max Healthcare Institute Ltd.          | 1083.3   | 1095.7   | 0.94%      | 81.3%    | WIN
+2026-07-09 to 2026-07-13 | SHYAMMETL.NS  | Shyam Metalics and Energy Ltd.         | 931.35   | 1029.35  | 10.32%     | 78.6%    | WIN
+2026-07-09 to 2026-07-20 | ZYDUSWELL.NS  | Zydus Wellness Ltd.                    | 560      | 596.1    | 6.25%      | 65.6%    | WIN
+2026-07-10 to 2026-07-20 | ADANIGREEN.NS | Adani Green Energy Ltd.                | 1505     | 1510.1   | 0.14%      | 75.0%    | WIN
+2026-07-10 to 2026-07-20 | PAGEIND.NS    | Page Industries Ltd.                   | 40605    | 40145    | -1.33%     | 76.7%    | LOSS
+2026-07-15 to 2026-07-20 | AAVAS.NS      | Aavas Financiers Ltd.                  | 1454.9   | 1509.6   | 3.56%      | 78.6%    | WIN
+2026-07-15 to 2026-07-20 | KPIL.NS       | Kalpataru Projects International Ltd.  | 1302.4   | 1298.6   | -0.49%     | 68.1%    | LOSS
+2026-07-15 to 2026-07-20 | SCHNEIDER.NS  | Schneider Electric Infrastructure Ltd. | 1337     | 1335.5   | -0.31%     | 65.4%    | LOSS
+2026-07-17 to 2026-07-20 | NUVAMA.NS     | Nuvama Wealth Management Ltd.          | 1840     | 1867.7   | 1.31%      | 71.4%    | WIN
+2026-07-17 to 2026-07-20 | PRESTIGE.NS   | Prestige Estates Projects Ltd.         | 1641.7   | 1676.4   | 1.91%      | 76.2%    | WIN
+2026-07-17 to 2026-07-20 | SPLPETRO.NS   | Supreme Petrochem Ltd.                 | 703.2    | 714.3    | 1.38%      | 66.7%    | WIN
