@@ -1,0 +1,17 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# Scan-generated cache/data — NEVER commit these. AI Studio's sandbox can't reach
+# NSE/proxies reliably, so local scans here often fall back to the small 83-ticker
+# list (or produce empty/corrupt files). If these get committed, pushing to GitHub
+# overwrites Render's own good cache (built on Render, where network access works)
+# with stale/broken local data — this is the recurring "83 symbols" regression.
+# Each environment (local dev, Render) should build and keep its OWN cache.
+public/cache/
+data/
