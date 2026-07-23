@@ -959,23 +959,9 @@ function backtestStrategy(
   //            of the signal price — meaning entry is still actionable.
   //        The old "5 sessions open position" rule is REMOVED — it caused stale signals
   //        to keep showing days after the entry window had passed.
+  // Sirf aaj ka fresh signal dikhao (signalOnLastBar) — kal ka signal stale hai
+  // Entry next day open pe hoti hai — kal ka signal aaj dikhana confusion create karta hai
   let liveSignal = signalOnLastBar;
-  if (!liveSignal && signals.length > 0) {
-    const lastSig = signals[signals.length - 1];
-    const lastSigIdx = dates.indexOf(lastSig.d);
-    const barsAgo = dates.length - 1 - lastSigIdx;
-    const currentPrice = closes[closes.length - 1];
-    const sigPrice = lastSig.p;
-    const priceDrift = Math.abs((currentPrice - sigPrice) / sigPrice) * 100;
-    // Show signal for up to 2 bars (signal day + next day = entry day) AND price within ±1%
-    if (barsAgo <= 2 && priceDrift <= 1.0) {
-      liveSignal = true;
-      if (overrideExit && lastSig.stop && lastSig.tgt) {
-        liveStopOut = lastSig.stop;
-        liveTargetOut = lastSig.tgt;
-      }
-    }
-  }
 
   // ADX live filter — sirf woh signal dikhao jahan latest ADX >= ADX_LIVE_FILTER
   // Historical trades pe koi asar nahi — sirf live signal gate karta hai
@@ -1582,19 +1568,8 @@ export function backtestDivergence(dailyOhlcv: OHLCV[]): BacktestStats {
     const dd = ((peak - equity) / peak) * 100;
     if (dd > maxDD) maxDD = dd;
   }
+  // Sirf aaj ka fresh signal dikhao — kal ka signal stale hai
   let liveSignal = signalOnLastBar;
-  if (!liveSignal && signals.length > 0) {
-    const lastSig = signals[signals.length - 1];
-    const lastSigIdx = dates.indexOf(lastSig.d);
-    const barsAgo = dates.length - 1 - lastSigIdx;
-    const currentPrice = closes[closes.length - 1];
-    const priceDrift = Math.abs((currentPrice - lastSig.p) / lastSig.p) * 100;
-    if (barsAgo <= 2 && priceDrift <= 1.0) {
-      liveSignal = true;
-      liveStop = lastSig.stop ?? liveStop;
-      liveTarget = lastSig.tgt ?? liveTarget;
-    }
-  }
   // ADX live filter — M6 pe bhi apply karo
   const adxM6 = calculateADX(ohlcv, 14);
   const latestADXM6 = adxM6[adxM6.length - 1] || 0;
@@ -1730,15 +1705,8 @@ export function backtestConnorsRSI(ohlcv: OHLCV[]): BacktestStats {
   }
 
   // ±1% live signal rule (same as other modules)
+  // Sirf aaj ka fresh signal dikhao — kal ka signal stale hai
   liveSignal = signalOnLastBar;
-  if (!liveSignal && signals.length > 0) {
-    const lastSig = signals[signals.length - 1];
-    const lastSigIdx = dates.indexOf(lastSig.d);
-    const barsAgo = n - 1 - lastSigIdx;
-    const currentPrice = closes[n - 1];
-    const priceDrift = Math.abs((currentPrice - lastSig.p) / lastSig.p) * 100;
-    if (barsAgo <= 2 && priceDrift <= 1.0) liveSignal = true;
-  }
 
   // Stats
   const wins   = trades.filter(r => r > 0);
@@ -2152,7 +2120,7 @@ export async function runScan(
       // Sector: Banks/Pharma/Power (toggle in UI — stored as metadata)
       const b6 = stratResults["m6_connors_rsi"];
       const inTargetSector = M6_SECTORS.has(stock.sector || "");
-      const m6passed = b6 && (b6.liveSignal || (b6.numTrades >= M6_MIN_TRADES && b6.winRatePct >= M6_MIN_WIN_RATE && b6.profitFactor >= M6_MIN_PF));
+      const m6passed = b6 && (b6.numTrades >= M6_MIN_TRADES && b6.winRatePct >= M6_MIN_WIN_RATE && b6.profitFactor >= M6_MIN_PF);
       if (m6passed) {
         passedCount++;
         module6Rows.push({
@@ -2185,7 +2153,7 @@ export async function runScan(
 
       // MODULE 7: Turtle Soup Scanner
       const b7 = stratResults["m7_turtle_soup"];
-      const m7passed = b7 && (b7.liveSignal || (b7.numTrades >= TS_MIN_TRADES && b7.winRatePct >= TS_MIN_WIN_RATE && b7.profitFactor >= TS_MIN_PF));
+      const m7passed = b7 && (b7.numTrades >= TS_MIN_TRADES && b7.winRatePct >= TS_MIN_WIN_RATE && b7.profitFactor >= TS_MIN_PF);
       if (m7passed) {
         passedCount++;
         module7Rows.push({
