@@ -14,11 +14,43 @@ const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 const CACHE = path.join(process.cwd(), "public", "cache");
 
-// ---------- Personal trade journal storage (survives scans — NOT inside /cache) ----------
+// ---------- Personal trade journal storage ----------
+// Primary: Google Sheets (persistent across restarts)
+// Fallback: Local JSON file (agar Sheets unavailable ho)
 const DATA_DIR = path.join(process.cwd(), "data");
 const TRADES_FILE = path.join(DATA_DIR, "mytrades.json");
+const SHEETS_URL = process.env.GOOGLE_SHEET_URL || "";
 
-function readTrades(): JournalTrade[] {
+// ── Google Sheets helpers ─────────────────────────────────
+async function sheetsRequest(body: object): Promise<any> {
+  if (!SHEETS_URL) return null;
+  try {
+    const res = await (globalThis as any).fetch(SHEETS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(8000)
+    });
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+async function sheetsGet(): Promise<any> {
+  if (!SHEETS_URL) return null;
+  try {
+    const res = await (globalThis as any).fetch(`${SHEETS_URL}?action=list`, {
+      signal: AbortSignal.timeout(8000)
+    });
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+// ── Local file helpers (fallback) ────────────────────────
+function readLocalTrades(): JournalTrade[] {
   try {
     if (!fs.existsSync(TRADES_FILE)) return [];
     const parsed = JSON.parse(fs.readFileSync(TRADES_FILE, "utf8"));
@@ -28,9 +60,32 @@ function readTrades(): JournalTrade[] {
   }
 }
 
-function writeTrades(trades: JournalTrade[]) {
+function writeLocalTrades(trades: JournalTrade[]) {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
   fs.writeFileSync(TRADES_FILE, JSON.stringify(trades, null, 2));
+}
+
+// ── Main trade functions (Sheets first, local fallback) ───
+async function readTrades(): Promise<JournalTrade[]> {
+  if (SHEETS_URL) {
+    const data = await sheetsGet();
+    if (data?.trades) {
+      // Local mein bhi save karo as cache
+      writeLocalTrades(data.trades);
+      return data.trades;
+    }
+  }
+  // Fallback to local
+  return readLocalTrades();
+}
+
+async function writeTrades(trades: JournalTrade[]) {
+  // Local mein hamesha save karo
+  writeLocalTrades(trades);
+  // Google Sheets mein bhi save karo
+  if (SHEETS_URL) {
+    await sheetsRequest({ action: "saveAll", trades });
+  }
 }
 
 app.use(express.json());
@@ -224,14 +279,14 @@ app.get("/api/scan/status", (_req, res) => {
 // ==================== PERSONAL TRADE JOURNAL API ====================
 
 // List all journaled trades (open first, newest first)
-app.get("/api/trades", (_req, res) => {
-  const trades = readTrades();
+app.get("/api/trades", async (_req, res) => {
+  const trades = await readTrades();
   trades.sort((a, b) => (a.status === "OPEN" ? 0 : 1) - (b.status === "OPEN" ? 0 : 1) || b.takenAt.localeCompare(a.takenAt));
   res.json({ trades });
 });
 
 // Tick "I'm taking this trade" — freezes entry/SL/target at this moment
-app.post("/api/trades/take", (req, res) => {
+app.post("/api/trades/take", async (req, res) => {
   const b = req.body || {};
   const entryPrice = Number(b.entryPrice);
   const stopPrice = Number(b.stopPrice);
@@ -258,18 +313,18 @@ app.post("/api/trades/take", (req, res) => {
     durationM: isFinite(Number(b.durationM)) ? Number(b.durationM) : undefined,
     note: b.note ? String(b.note).slice(0, 500) : undefined
   };
-  const trades = readTrades();
+  const trades = await readTrades();
   // Duplicate guard: same symbol + strategy already OPEN → double tick roka
   const dup = trades.find((t) => t.status === "OPEN" && t.symbol === trade.symbol && (t.strategyId || "") === (trade.strategyId || ""));
   if (dup) return res.status(409).json({ ok: false, error: `${trade.symbol} ka is strategy pe ek OPEN trade pehle se journal mein hai (${dup.entryDate})` });
   trades.push(trade);
-  writeTrades(trades);
+  await writeTrades(trades);
   res.json({ ok: true, trade });
 });
 
 // Auto-check every OPEN trade against fresh Yahoo candles: SL hit? Target hit? Still running?
 app.post("/api/trades/check", async (_req, res) => {
-  const trades = readTrades();
+  const trades = await readTrades();
   const open = trades.filter((t) => t.status === "OPEN");
   if (open.length === 0) return res.json({ ok: true, updated: 0, trades });
 
@@ -299,16 +354,16 @@ app.post("/api/trades/check", async (_req, res) => {
       updated++;
     }
   }
-  writeTrades(trades);
+  await writeTrades(trades);
   res.json({ ok: true, updated, failedSymbols: failed, trades });
 });
 
 // Manually close a trade (user exited on their own) at a given price
-app.post("/api/trades/close", (req, res) => {
+app.post("/api/trades/close", async (req, res) => {
   const { id, exitPrice } = req.body || {};
   const px = Number(exitPrice);
   if (!id || !isFinite(px) || px <= 0) return res.status(400).json({ ok: false, error: "id aur valid exitPrice chahiye" });
-  const trades = readTrades();
+  const trades = await readTrades();
   const t = trades.find((x) => x.id === id);
   if (!t) return res.status(404).json({ ok: false, error: "trade nahi mila" });
   if (t.status !== "OPEN") return res.status(400).json({ ok: false, error: "trade pehle se closed hai" });
@@ -318,17 +373,17 @@ app.post("/api/trades/close", (req, res) => {
   t.returnPct = parseFloat((((px - t.entryPrice) / t.entryPrice) * 100).toFixed(2));
   t.currentPrice = undefined;
   t.unrealizedPct = undefined;
-  writeTrades(trades);
+  await writeTrades(trades);
   res.json({ ok: true, trade: t });
 });
 
 // Delete a journal entry
-app.post("/api/trades/delete", (req, res) => {
+app.post("/api/trades/delete", async (req, res) => {
   const { id } = req.body || {};
-  const trades = readTrades();
+  const trades = await readTrades();
   const next = trades.filter((t) => t.id !== id);
   if (next.length === trades.length) return res.status(404).json({ ok: false, error: "trade nahi mila" });
-  writeTrades(next);
+  await writeTrades(next);
   res.json({ ok: true });
 });
 
@@ -336,7 +391,7 @@ app.post("/api/trades/delete", (req, res) => {
 // Uses playback data (pre-computed signals) to check if exit condition triggered today
 app.get("/api/trades/exit-signals", async (_req, res) => {
   try {
-    const trades = readTrades().filter((t: any) => t.status === "OPEN");
+    const trades = (await readTrades()).filter((t: any) => t.status === "OPEN");
     const results: Record<string, { signal: boolean; reason: string; crsi?: number; stochK?: number; rsi?: number }> = {};
 
     const PLAYBACK_DIR = path.join(process.cwd(), "data", "playback");
@@ -454,7 +509,7 @@ app.post("/api/trades/review", async (req, res) => {
   }
   const { id, journal } = req.body || {};
   const isPb = journal === "playback";
-  const trades = isPb ? readPbTrades() : readTrades();
+  const trades = isPb ? readPbTrades() : await readTrades();
   const closed = trades.filter((t) => t.status !== "OPEN");
   if (closed.length === 0) return res.json({ ok: false, error: "Abhi koi closed trade nahi hai review ke liye." });
 
@@ -481,7 +536,7 @@ app.post("/api/trades/review", async (req, res) => {
     if (!text) return res.json({ ok: false, error: "Gemini se khali response aaya, dobara try karo." });
     if (target) {
       target.aiReview = text;
-      if (isPb) writePbTrades(trades); else writeTrades(trades);
+      if (isPb) writePbTrades(trades); else await writeTrades(trades);
     }
     res.json({ ok: true, review: text, tradeId: target?.id });
   } catch (e: any) {
