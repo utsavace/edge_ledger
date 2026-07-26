@@ -159,7 +159,8 @@ function backtest(id: StratId, data: OHLCV[], ind: any, scheme: Scheme): TradeOu
   const out: TradeOut[] = [];
   let inPos = false, entry = 0, slLvl = 0, tgtLvl = 0, useLevels = false, plannedRR: number | null = null, pending = false;
 
-  for (let i = 50; i < data.length; i++) {
+  const WARMUP_BARS = 50; // Must be >= 2×ADX period (28) + buffer for indicator stability
+  for (let i = WARMUP_BARS; i < data.length; i++) {
     if (!inPos) {
       if (pending) {
         inPos = true; entry = opens[i]; pending = false;
@@ -189,6 +190,7 @@ function backtest(id: StratId, data: OHLCV[], ind: any, scheme: Scheme): TradeOu
 
 export interface SchemeAgg {
   key: string; label: string; trades: number; winRatePct: number; profitFactor: number;
+  profitFactorCapped: boolean; // true when actual PF > NO_LOSS_PF_CAP (10x) — displayed value is capped, real edge may be stronger
   avgReturnPct: number; expectancyPct: number; avgWinPct: number; avgLossPct: number;
   maxDrawdownPct: number; avgPlannedRR: number | null;
 }
@@ -198,7 +200,9 @@ function agg(trades: TradeOut[]): Omit<SchemeAgg, "key" | "label"> | null {
   const rets = trades.map(t => t.ret);
   const wins = rets.filter(r => r > 0), losses = rets.filter(r => r <= 0);
   const gp = wins.reduce((a, b) => a + b, 0), gl = Math.abs(losses.reduce((a, b) => a + b, 0));
-  const pf = gl === 0 ? (gp > 0 ? NO_LOSS_PF_CAP : 1) : Math.min(gp / gl, NO_LOSS_PF_CAP);
+  const rawPF = gl === 0 ? (gp > 0 ? Infinity : 1) : gp / gl;
+  const pf = Math.min(rawPF, NO_LOSS_PF_CAP); // cap for display — actual PF may be higher
+  const pfCapped = rawPF > NO_LOSS_PF_CAP;    // flag so UI can show "10.00+" instead of "10.00"
   const avg = rets.reduce((a, b) => a + b, 0) / n;
   const rrs = trades.map(t => t.rr).filter((x): x is number => x != null);
   let bal = 100, peak = 100, maxDD = 0;
@@ -207,6 +211,7 @@ function agg(trades: TradeOut[]): Omit<SchemeAgg, "key" | "label"> | null {
     trades: n,
     winRatePct: +(wins.length / n * 100).toFixed(1),
     profitFactor: +pf.toFixed(2),
+    profitFactorCapped: pfCapped,
     avgReturnPct: +avg.toFixed(2),
     expectancyPct: +avg.toFixed(2),
     avgWinPct: +(wins.length ? gp / wins.length : 0).toFixed(2),
