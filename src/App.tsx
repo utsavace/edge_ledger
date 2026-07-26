@@ -38,7 +38,7 @@ const TABS = [
 
 const DESC: Record<number, string> = {
   1: "Stochastic RSI Trend Filter — StochRSI K crosses D below 15 + ADX > 20 → next bar open pe entry. Exit: K crosses D above 80. 10yr zero-lookahead OOS validated: PF 1.71, Win 58.3%, 6/6 years profitable. Gate: 10 trades / 55% WR / 1.5 PF. 🔵 Live signal filter: ADX ≥ 29 wale stocks hi dikhenge.",
-  6: "ConnorsRSI(3,2,100) oversold scanner — Price > EMA(200) + ConnorsRSI < 15 (deeply oversold in uptrend) → next bar open pe entry. Exit: ConnorsRSI > 90. 10yr OOS validated: PF 2.74, Win 72.1%, 5/5 years profitable. Gate: 10 trades / 60% WR / 1.5 PF. 🔵 Live signal filter: ADX ≥ 29 wale stocks hi dikhenge.",
+  6: "ConnorsRSI(3,2,100) oversold scanner — Price > EMA(200) + ConnorsRSI < 15 → next bar open pe entry. Exit: ConnorsRSI > 90. 10yr OOS: PF 2.15, Win 67.6%, 9/10 years profitable. Gate: 10 trades / 60% WR / 1.5 PF. 🔵 ADX ≥ 29 live filter. ⚡ Efficient Mode: CRSI<10 → exit>80, avg hold 16 days vs 72 days — capital velocity 35% better!",
   7: "Turtle Soup (Connors & Raschke, Street Smarts 1995) — New 20-day low bana + previous 20-day low 4+ sessions pehle tha → false breakdown reversal. BUY: entry above previous low, SL today's low, Target 1:2 RR. SELL: entry below previous high, SL today's high, Target 1:1.2 RR. No gate — all stocks. 10yr OOS: PF 1.64, Win 64.4%, 10/10 years profitable.",
   5: "Tumhara personal trade journal — jis stock ka trade lena ho usse yahan save karo. App rooz check karta hai ki exit signal aaya ya nahi aur status dikhata hai: Holding ✅ ya EXIT ⚠️.",
 };
@@ -53,6 +53,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [liveOnly, setLiveOnly] = useState(false);
   const [m6SectorFilter, setM6SectorFilter] = useState(false);
+  const [m6EfficientMode, setM6EfficientMode] = useState(false); // Efficient Capital Allocation toggle
   const [historyStart, setHistoryStart] = useState(() => {
     const d = new Date();
     d.setFullYear(d.getFullYear() - 5); // default: last 5 years; pick any older date to go further back
@@ -415,6 +416,12 @@ export default function App() {
     if (tab === 6 && m6SectorFilter) {
       result = result.filter((r) => (r as any).inTargetSector === true);
     }
+    // M6 tab: efficient mode — sirf strict CRSI (<10, exit>80) wale stocks
+    if (tab === 6 && m6EfficientMode) {
+      result = result.filter((r) => (r as any).isEfficientMode === true);
+    } else if (tab === 6 && !m6EfficientMode) {
+      result = result.filter((r) => (r as any).isEfficientMode !== true);
+    }
     if (sortField) {
       result.sort((a, b) => {
         const valA = a[sortField];
@@ -435,7 +442,7 @@ export default function App() {
       });
     }
     return result;
-  }, [rows, searchQuery, liveOnly, sortField, sortAsc, pbOn, pbSnap, tab, m6SectorFilter]);
+  }, [rows, searchQuery, liveOnly, sortField, sortAsc, pbOn, pbSnap, tab, m6SectorFilter, m6EfficientMode]);
 
   const g = meta?.gate;
   const needsScan = meta?.needsScan && !pbOn; // playback has its own data source
@@ -675,6 +682,17 @@ export default function App() {
                   >
                     <span className="toggle-dot" />
                     {m6SectorFilter ? "🏦 Banks • Pharma • Power" : "🌐 All Sectors"}
+                  </button>
+                )}
+                {tab === 6 && (
+                  <button
+                    className={`toggle-filter-btn ${m6EfficientMode ? "active" : ""}`}
+                    onClick={() => setM6EfficientMode(!m6EfficientMode)}
+                    title={m6EfficientMode ? "Efficient Mode ON: CRSI<10 + exit>80 — Avg hold 16 days, WR 67.1%, PF 1.62. Capital velocity 35% better!" : "Efficient Mode OFF: Standard CRSI<15 — Avg hold 72 days, WR 67.6%, PF 2.15"}
+                    style={m6EfficientMode ? { borderColor: "rgba(16,185,129,0.6)", color: "#10B981" } : {}}
+                  >
+                    <span className="toggle-dot" />
+                    {m6EfficientMode ? "⚡ Efficient Capital Allocation" : "⚡ Efficient Capital"}
                   </button>
                 )}
                 <div className="history-date-box" style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px", color: "#8e9ba9" }}>
