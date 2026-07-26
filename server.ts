@@ -120,18 +120,28 @@ let scanStatus: ScanStatus = {
 // ============================================================================
 const AUTO_SCAN_INTERVAL_MS = 2 * 60 * 60 * 1000; // every 2 hours
 
-function nowIST(): Date {
-  // Shift current UTC time by +5:30 so getUTC* reads back as IST wall-clock time,
-  // regardless of what timezone the server OS itself is running in.
-  return new Date(Date.now() + 5.5 * 60 * 60 * 1000);
-}
+// FIX: Use Intl.DateTimeFormat for robust IST timezone handling
+// Previous approach (manual +5.5h offset) worked but was fragile and confusing.
+// Intl.DateTimeFormat with 'Asia/Kolkata' is the correct, self-documenting approach.
+function isAutoScanWindowIST(): boolean {
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Kolkata',
+    weekday:  'short',
+    hour:     '2-digit',
+    minute:   '2-digit',
+    hour12:   false,
+  }).formatToParts(now);
 
-function isAutoScanWindowIST(d: Date): boolean {
-  const day = d.getUTCDay(); // 0 = Sun, 6 = Sat (NSE closed)
-  if (day === 0 || day === 6) return false;
-  const mins = d.getUTCHours() * 60 + d.getUTCMinutes();
-  const MARKET_OPEN = 9 * 60 + 15;   // 9:15 AM IST
-  const REFRESH_CUTOFF = 16 * 60;    // 4:00 PM IST (one extra pass after the 3:30 close to pick up final EOD candles)
+  const weekday = parts.find(p => p.type === 'weekday')?.value || '';
+  const hour    = parseInt(parts.find(p => p.type === 'hour')?.value   || '0', 10);
+  const minute  = parseInt(parts.find(p => p.type === 'minute')?.value || '0', 10);
+
+  if (weekday === 'Sat' || weekday === 'Sun') return false;
+
+  const mins = hour * 60 + minute;
+  const MARKET_OPEN    = 9 * 60 + 15;  // 9:15 AM IST
+  const REFRESH_CUTOFF = 16 * 60;      // 4:00 PM IST
   return mins >= MARKET_OPEN && mins <= REFRESH_CUTOFF;
 }
 
@@ -139,7 +149,7 @@ function scheduleAutoScan() {
   if (process.env.NODE_ENV !== "production") return; // AI Studio dev sandbox: manual button only
   setInterval(() => {
     if (scanStatus.isScanning) return; // never overlap with an in-progress scan
-    if (!isAutoScanWindowIST(nowIST())) return;
+    if (!isAutoScanWindowIST()) return;
 
     scanStatus = {
       isScanning: true,
