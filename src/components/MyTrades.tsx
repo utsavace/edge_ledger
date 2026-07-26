@@ -328,7 +328,7 @@ export function MyTrades({ onCountChange, mode = "live", asOfDate }: { onCountCh
                         <td style={td}>{t.entryDate} → {t.exitDate}</td>
                         <td style={td}>{t.entryPrice}</td>
                         <td style={td}>{t.exitPrice}</td>
-                        <td style={{ ...td, color: (t.returnPct ?? 0) >= 0 ? "#22c55e" : "#ef4444", fontWeight: 700 }}>{fmtPct(t.returnPct)}</td>
+                        <td style={{ ...td, color: t.returnPct === null || t.returnPct === undefined ? "#8e9ba9" : (t.returnPct >= 0 ? "#22c55e" : "#ef4444"), fontWeight: 700 }}>{fmtPct(t.returnPct)}</td>
                         <td style={td}><span style={{ fontSize: "10.5px", padding: "2px 7px", borderRadius: "4px", color: m.color, background: m.bg, border: `1px solid ${m.color}44`, fontWeight: 700 }}>{m.label}</span></td>
                         <td style={td}>
                           {t.aiReview ? (
