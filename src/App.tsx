@@ -87,6 +87,7 @@ export default function App() {
   const [pbPauseMsg, setPbPauseMsg] = useState("");    // "auto-paused because your trade resolved" banner
   const pbFetchSeq = useRef(0);
   const pbCheckBusy = useRef(false);
+  const pbCheckSeq = useRef(0); // FIX: sequence number to drop stale trade-check responses
 
   const enterPlayback = async () => {
     setPbErr("");
@@ -168,6 +169,7 @@ export default function App() {
   useEffect(() => {
     if (!pbOn || !pbDate || pbOpenCount === 0 || pbCheckBusy.current) return;
     pbCheckBusy.current = true;
+    const seq = ++pbCheckSeq.current; // FIX: capture sequence before async
     fetch("/api/playback/trades/check", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -175,6 +177,7 @@ export default function App() {
     })
       .then((r) => r.json())
       .then((d) => {
+        if (seq !== pbCheckSeq.current) return; // FIX: drop stale responses
         if (!d.ok) return;
         const list: any[] = Array.isArray(d.trades) ? d.trades : [];
         setPbJournalCount(list.length);
