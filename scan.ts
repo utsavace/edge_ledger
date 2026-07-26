@@ -51,10 +51,16 @@ export function evaluateTradeOutcome(
 ): { status: "OPEN" | "SL_HIT" | "TARGET_HIT"; exitPrice?: number; exitDate?: string; currentPrice?: number } {
   const after = ohlcv.filter((c) => c.date > entryDate);
   for (const c of after) {
-    if (c.open <= stopPrice) return { status: "SL_HIT", exitPrice: c.open, exitDate: c.date };       // gap below stop → filled at open
-    if (c.low <= stopPrice) return { status: "SL_HIT", exitPrice: stopPrice, exitDate: c.date };     // stop hit intraday
-    if (c.open >= targetPrice) return { status: "TARGET_HIT", exitPrice: c.open, exitDate: c.date }; // gap above target
-    if (c.high >= targetPrice) return { status: "TARGET_HIT", exitPrice: targetPrice, exitDate: c.date };
+    // Gap cases — open price confirms which level was hit (no ambiguity)
+    if (c.open <= stopPrice)   return { status: "SL_HIT",     exitPrice: c.open,        exitDate: c.date };
+    if (c.open >= targetPrice) return { status: "TARGET_HIT", exitPrice: c.open,        exitDate: c.date };
+    // Same-candle ambiguity: if BOTH SL and target could be hit intraday,
+    // SL takes priority (conservative — intraday order unknown from daily bars)
+    if (c.low <= stopPrice && c.high >= targetPrice) {
+      return { status: "SL_HIT", exitPrice: stopPrice, exitDate: c.date };
+    }
+    if (c.low <= stopPrice)    return { status: "SL_HIT",     exitPrice: stopPrice,     exitDate: c.date };
+    if (c.high >= targetPrice) return { status: "TARGET_HIT", exitPrice: targetPrice,   exitDate: c.date };
   }
   const last = ohlcv[ohlcv.length - 1];
   return { status: "OPEN", currentPrice: last ? last.close : undefined };
