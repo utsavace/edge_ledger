@@ -994,6 +994,135 @@ app.post("/api/admin/clear-playback", (_req, res) => {
   }
 });
 
+
+// ── KITECONNECT INTEGRATION ──────────────────────────────
+// Docs: https://kite.trade/docs/connect/v3/
+const KITE_API_KEY    = process.env.KITE_API_KEY    || "";
+const KITE_API_SECRET = process.env.KITE_API_SECRET || "";
+let kiteAccessToken   = ""; // Set after login, valid for 1 day
+
+// Step 1 — Redirect user to Kite login
+app.get("/api/kite/login", (_req, res) => {
+  if (!KITE_API_KEY) return res.status(500).json({ ok: false, error: "KITE_API_KEY not set" });
+  const loginUrl = `https://kite.zerodha.com/connect/login?api_key=${KITE_API_KEY}&v=3`;
+  res.redirect(loginUrl);
+});
+
+// Step 2 — Kite redirects back with request_token → exchange for access_token
+app.get("/api/kite/callback", async (req, res) => {
+  const { request_token, status } = req.query as { request_token?: string; status?: string };
+  if (status !== "success" || !request_token) {
+    return res.status(400).send("❌ Kite login failed. Wapas jao aur try karo.");
+  }
+  try {
+    // Generate session (access token)
+    const crypto = await import("crypto");
+    const checksum = crypto.default
+      .createHash("sha256")
+      .update(KITE_API_KEY + request_token + KITE_API_SECRET)
+      .digest("hex");
+
+    const sessionRes = await (globalThis as any).fetch(
+      "https://api.kite.trade/session/token",
+      {
+        method: "POST",
+        headers: {
+          "X-Kite-Version": "3",
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          api_key: KITE_API_KEY,
+          request_token,
+          checksum,
+        }),
+      }
+    );
+    const sessionData = await sessionRes.json();
+    if (sessionData.status !== "success") {
+      throw new Error(sessionData.message || "Session generation failed");
+    }
+    kiteAccessToken = sessionData.data.access_token;
+    console.log("✅ Kite login successful! Access token set.");
+
+    // Save token to file (survives server restart within same day)
+    const tokenFile = path.join(process.cwd(), "data", "kite_token.json");
+    if (!fs.existsSync(path.join(process.cwd(), "data"))) {
+      fs.mkdirSync(path.join(process.cwd(), "data"), { recursive: true });
+    }
+    fs.writeFileSync(tokenFile, JSON.stringify({
+      access_token: kiteAccessToken,
+      date: new Date().toISOString().slice(0, 10)
+    }));
+
+    res.send(`
+      <html><body style="font-family:sans-serif;padding:40px;background:#0f141c;color:#e6edf5">
+        <h2 style="color:#10b981">✅ Kite Login Successful!</h2>
+        <p>Access token set kar diya gaya. Aaj ke liye scan karne ke liye ready hai.</p>
+        <a href="/" style="color:#fbbf24;text-decoration:none;font-weight:bold">← Edge Ledger pe wapas jao</a>
+      </body></html>
+    `);
+  } catch (err) {
+    console.error("Kite session error:", err);
+    res.status(500).send(`❌ Token generation failed: ${String(err)}`);
+  }
+});
+
+// Step 3 — Check Kite connection status
+app.get("/api/kite/status", (_req, res) => {
+  // Try loading saved token
+  if (!kiteAccessToken) {
+    const tokenFile = path.join(process.cwd(), "data", "kite_token.json");
+    if (fs.existsSync(tokenFile)) {
+      try {
+        const saved = JSON.parse(fs.readFileSync(tokenFile, "utf8"));
+        const today = new Date().toISOString().slice(0, 10);
+        if (saved.date === today && saved.access_token) {
+          kiteAccessToken = saved.access_token;
+        }
+      } catch { /* ignore */ }
+    }
+  }
+  res.json({
+    connected: !!kiteAccessToken,
+    apiKey: KITE_API_KEY ? KITE_API_KEY.slice(0, 8) + "..." : "",
+    msg: kiteAccessToken ? "✅ Kite connected — aaj ke liye login hai" : "❌ Kite not connected — login karo"
+  });
+});
+
+// Step 4 — Fetch historical data from Kite (replaces Yahoo for a given symbol)
+app.get("/api/kite/historical", async (req, res) => {
+  const { symbol, from, to } = req.query as { symbol?: string; from?: string; to?: string };
+  if (!symbol) return res.status(400).json({ ok: false, error: "symbol required" });
+  if (!kiteAccessToken) return res.status(401).json({ ok: false, error: "Kite not connected. /api/kite/login pe jao." });
+
+  try {
+    // Get instrument token for symbol
+    const instrRes = await (globalThis as any).fetch(
+      `https://api.kite.trade/instruments/NSE`,
+      { headers: { "X-Kite-Version": "3", "Authorization": `token ${KITE_API_KEY}:${kiteAccessToken}` } }
+    );
+    const instrText = await instrRes.text();
+    const lines = instrText.split("
+").filter(l => l.includes(`,${symbol},`));
+    if (!lines.length) return res.status(404).json({ ok: false, error: `${symbol} not found on NSE` });
+
+    const instrToken = lines[0].split(",")[0];
+    const fromDate = from || new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const toDate = to || new Date().toISOString().slice(0, 10);
+
+    const histRes = await (globalThis as any).fetch(
+      `https://api.kite.trade/instruments/historical/${instrToken}/day?from=${fromDate}&to=${toDate}`,
+      { headers: { "X-Kite-Version": "3", "Authorization": `token ${KITE_API_KEY}:${kiteAccessToken}` } }
+    );
+    const histData = await histRes.json();
+    if (histData.status !== "success") throw new Error(histData.message);
+
+    res.json({ ok: true, symbol, candles: histData.data.candles });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: String(err) });
+  }
+});
+
 app.post("/api/publish", (_req, res) => {
   if (process.env.NODE_ENV === "production") {
     return res.status(403).json({ ok: false, output: "Publish is disabled in production. Run it from local dev." });
