@@ -522,6 +522,26 @@ export default function App() {
             </button>
           )}
           {pbErr && !pbOn && <span className="text-xs text-[#ef4444] font-mono max-w-[280px]">{pbErr}</span>}
+          {!pbOn && (
+            <button
+              type="button"
+              title="Playback cache clear karo — purane stale signals hatane ke liye. Fresh scan ke baad autoplay se naye snapshots banenge."
+              className="flex items-center gap-1.5 bg-[#1a1f2e] border border-[#2a3142] text-[#8e9ba9] font-semibold px-3 py-2 rounded-lg text-xs transition-all hover:border-[#ef4444] hover:text-[#ef4444] cursor-pointer active:scale-[0.97]"
+              onClick={async () => {
+                if (!confirm("Playback cache clear karna chahte ho? Sabhi purane snapshots delete ho jaayenge aur fresh scan se naye banenge.")) return;
+                try {
+                  const r = await fetch("/api/admin/clear-playback", { method: "POST" });
+                  const d = await r.json();
+                  if (d.ok) alert("✅ Playback cache cleared! Ab fresh scan karo aur autoplay se naye snapshots banenege.");
+                  else alert("❌ Error: " + d.error);
+                } catch {
+                  alert("❌ Server se connect nahi ho paya.");
+                }
+              }}
+            >
+              🗑️ Clear Playback Cache
+            </button>
+          )}
           <div className="gatestamp">
             <span className="gate-label">STRICT GATE</span>
             <span className="gate-rules">
