@@ -33,8 +33,6 @@ export interface LedgerRow {
   liveTarget?: number | null;
   isSynthetic?: boolean;
   tradesKey?: string;
-  trades?: TradeRecord[];                                        // playback snapshots ship trades inline
-  openPosition?: { entryDate: string; entryPrice: number } | null; // playback: position open on that date
   patternDepth?: number;
   patternDuration?: number;
   hasChart?: boolean;
@@ -49,7 +47,6 @@ interface LedgerProps {
   historyStart: string; // YYYY-MM-DD — only signals on/after this date are shown
   strictHighlight?: boolean; // M2: badge rows meeting the strict 15-trade / PF 2.5 standard
   onTradeTaken?: () => void; // notify parent so the "My Trades" tab badge updates
-  playbackDate?: string | null; // set => TIME MACHINE mode: rows are an as-of-this-date snapshot
   onOpenChart?: (symbol: string, name?: string) => void; // triggers divergence chart modal
 }
 
@@ -63,8 +60,7 @@ export function Ledger({
   onSort,
   historyStart,
   strictHighlight,
-  onTradeTaken,
-  playbackDate,
+  onTradeTaken
   onOpenChart
 }: LedgerProps) {
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -78,25 +74,12 @@ export function Ledger({
   const [tTarget, setTTarget] = useState("");
   const [takeMsg, setTakeMsg] = useState("");
   const [taking, setTaking] = useState(false);
-  
-  // Playback practice-trade form uses PERCENTAGES (entry fills at next session's open)
-  const [tStopPct, setTStopPct] = useState("");
-  const [tTargetPct, setTTargetPct] = useState("");
-
-  const colCount = showStrategy ? 13 : 12;
-
-  const renderSortIcon = (field: keyof LedgerRow) => {
-    if (sortField !== field) return <span className="sort-icon">↕</span>;
-    return sortAsc ? <span className="sort-icon active">▲</span> : <span className="sort-icon active">▼</span>;
-  };
 
   const toggleRow = async (r: LedgerRow) => {
     const rowKey = r.symbol + r.strategyId;
     if (expanded === rowKey) { setExpanded(null); return; }
     setExpanded(rowKey);
-    const key = r.tradesKey || `${r.symbol}__${r.strategyId}`;
-    if (r.trades) { // playback snapshot rows carry their as-of trades inline
-      setTradesCache((prev) => ({ ...prev, [key]: r.trades! }));
+    const key = r.tradesKey || `${r.symbol}__${r.strategyId}`;));
       return;
     }
     if (!tradesCache[key]) {
@@ -126,16 +109,7 @@ export function Ledger({
 
   const openTakeForm = (r: LedgerRow) => {
     const rowKey = r.symbol + r.strategyId;
-    const isM2 = r.strategyId === "m2_rounding_bottom";
-
-    if (playbackDate) {
-      if (r.livePrice && r.liveStop && r.liveTarget) {
-        // Real backtest-derived levels available (ATR-based, fixed R:R, or m4's structural) — pre-fill from those
-        const sPct = Math.max(0.1, ((r.livePrice - r.liveStop) / r.livePrice) * 100);
-        const tPct = Math.max(0.1, ((r.liveTarget - r.livePrice) / r.livePrice) * 100);
-        setTStopPct(sPct.toFixed(1));
-        setTTargetPct(tPct.toFixed(1));
-      } else {
+    const isM2 = r.strategyId === "m2_rounding_bottom"; else {
         setTStopPct(String(isM2 ? 5 : 8));
         setTTargetPct(String(isM2 ? 15 : Math.max(3, Math.round(r.avgReturnPct))));
       }
@@ -175,41 +149,6 @@ export function Ledger({
     }
   };
 
-  const submitPlaybackTake = async (r: LedgerRow) => {
-    const stopPct = Number(tStopPct), targetPct = Number(tTargetPct);
-    if (!isFinite(stopPct) || stopPct <= 0 || stopPct >= 50) { setTakeMsg("❌ Stop% 0-50 ke beech do"); return; }
-    if (!isFinite(targetPct) || targetPct <= 0) { setTakeMsg("❌ Target% valid do"); return; }
-    setTaking(true);
-    try {
-      const res = await fetch("/api/playback/trades/take", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          symbol: r.symbol,
-          name: r.name,
-          strategyId: r.strategyId,
-          strategyLabel: r.strategyLabel,
-          module: ({ m2_rounding_bottom:"m2", m4_divergence:"m4", m3_best_overall:"m3", m6_connors_rsi:"m6", m6_connors_rsi_strict:"m6" } as Record<string,string>)[r.strategyId] ?? "m1",
-          signalDate: playbackDate,
-          stopPct,
-          targetPct,
-          depthPct: r.patternDepth,
-          durationM: r.patternDuration
-        })
-      });
-      const d = await res.json();
-      if (d.ok) {
-        setTakeMsg("✅ Practice journal mein add — entry AGLE session ke open pe hogi, din aage badhao");
-        setTakeOpen(null);
-        if (onTradeTaken) onTradeTaken();
-      } else setTakeMsg(`❌ ${d.error || "save fail"}`);
-    } catch {
-      setTakeMsg("❌ Server se connect nahi hua");
-    } finally {
-      setTaking(false);
-    }
-  };
-
   const submitTake = async (r: LedgerRow) => {
     const entryPrice = Number(tEntry);
     const isM6 = r.strategyId === "m6_connors_rsi";
@@ -223,71 +162,12 @@ export function Ledger({
     }
     setTaking(true);
     try {
-      // Playback mode me alag endpoint — live journal me nahi jaayega
-      if (playbackDate) {
-        const res = await fetch("/api/playback/trades/take", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            symbol: r.symbol,
-            name: r.name,
-            strategyId: r.strategyId,
-            strategyLabel: r.strategyLabel,
-            signalDate: playbackDate,
-            stopPct: isM6 ? 8 : Math.round((entryPrice - stopPrice) / entryPrice * 100 * 10) / 10,
-            targetPct: isM6 ? Math.max(r.avgReturnPct, 3) : Math.round((targetPrice - entryPrice) / entryPrice * 100 * 10) / 10,
-          })
-        });
-        const d = await res.json();
-        if (d.ok) {
-          setTakeMsg("✅ Practice journal mein add ho gaya — 'My Trades' tab mein track hoga");
-          setTakeOpen(null);
-          if (onTradeTaken) onTradeTaken();
-        } else setTakeMsg(`❌ ${d.error || "save fail"}`);
-        return;
-      }
-      const res = await fetch("/api/trades/take", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          symbol: r.symbol,
-          name: r.name,
-          strategyId: r.strategyId,
-          strategyLabel: r.strategyLabel,
-          module: ({ m2_rounding_bottom:"m2", m4_divergence:"m4", m3_best_overall:"m3", m6_connors_rsi:"m6", m6_connors_rsi_strict:"m6" } as Record<string,string>)[r.strategyId] ?? "m1",
-          entryPrice,
-          stopPrice,
-          targetPrice,
-          depthPct: r.patternDepth,
-          durationM: r.patternDuration
-        })
-      });
-      const d = await res.json();
-      if (d.ok) {
-        setTakeMsg("✅ Journal mein add ho gaya — 'My Trades' tab mein track hoga");
-        setTakeOpen(null);
-        if (onTradeTaken) onTradeTaken();
-      } else setTakeMsg(`❌ ${d.error || "save fail"}`);
-    } catch {
-      setTakeMsg("❌ Server se connect nahi hua");
-    } finally {
-      setTaking(false);
-    }
-  };
 
   const inp: React.CSSProperties = { background: "#0f141c", border: "1px solid #2a3342", color: "#e6edf5", borderRadius: "6px", padding: "4px 8px", fontFamily: "monospace", width: "92px", fontSize: "12px" };
 
   const renderTakeSection = (r: LedgerRow) => {
     const rowKey = r.symbol + r.strategyId;
     const formOpen = takeOpen === rowKey;
-    if (playbackDate) {
-      if (!r.liveSignal) return null;
-      return (
-        <div className="mb-3">
-          {!formOpen ? (
-            <div className="flex items-center gap-2 flex-wrap">
-              <button
-                onClick={() => openTakeForm(r)}
                 className="bg-linear-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-extrabold border-none rounded-lg px-4 py-1.5 text-xs cursor-pointer shadow-md transition-all duration-150"
               >
                 ✋ Take this trade (practice)
@@ -296,13 +176,9 @@ export function Ledger({
             </div>
           ) : (
             <div className="p-3 rounded-lg bg-purple-500/5 border border-purple-500/40 font-mono text-xs text-slate-300">
-              <div className="font-bold text-purple-400 mb-2">🕰 Practice trade — {r.symbol.replace(".NS", "")} @ signal {playbackDate}</div>
               <div className="flex flex-wrap gap-3 items-center">
                 <label className="flex items-center gap-1">Stop-loss % <input style={{ ...inp, borderColor: "rgba(239,68,68,0.5)", width: "64px" }} value={tStopPct} onChange={(e) => setTStopPct(e.target.value)} /></label>
                 <label className="flex items-center gap-1">Target % <input style={{ ...inp, borderColor: "rgba(34,197,94,0.5)", width: "64px" }} value={tTargetPct} onChange={(e) => setTTargetPct(e.target.value)} /></label>
-                <button onClick={() => submitPlaybackTake(r)} disabled={taking} className="bg-purple-600 hover:bg-purple-700 text-white font-extrabold border-none rounded-sm px-3 py-1 cursor-pointer text-xs disabled:opacity-60">
-                  {taking ? "Saving…" : "✓ Lock decision"}
-                </button>
                 <button onClick={() => setTakeOpen(null)} className="bg-transparent text-slate-400 hover:text-slate-200 border border-slate-700 hover:border-slate-600 rounded-sm px-3 py-1 cursor-pointer text-xs">Cancel</button>
               </div>
               <div className="text-slate-500 text-[10px] mt-1.5">
@@ -344,24 +220,6 @@ export function Ledger({
                   🛡️ Emergency floor: entry se <strong>−8%</strong> neeche gaye to manually exit karo
                 </div>
               </div>
-            ) : r.strategyId === "m7_turtle_soup" ? (
-              // M7 Turtle Soup: BUY 1:2 RR, SELL 1:1.2 RR — liveStop/liveTarget already computed
-              <div>
-                <div className="flex flex-wrap gap-3 items-center mb-2">
-                  <label className="flex items-center gap-1">Entry ₹ <input style={inp} value={tEntry} onChange={(e) => recalcFromEntry(r, e.target.value)} placeholder="e.g. 542" /></label>
-                  <label className="flex items-center gap-1">Stop ₹ <input style={{ ...inp, borderColor: "rgba(239,68,68,0.5)" }} value={tStop} onChange={(e) => setTStop(e.target.value)} /></label>
-                  <label className="flex items-center gap-1">Target ₹ <input style={{ ...inp, borderColor: "rgba(34,197,94,0.5)" }} value={tTarget} onChange={(e) => setTTarget(e.target.value)} /></label>
-                  <button onClick={() => submitTake(r)} disabled={taking} className="bg-green-600 hover:bg-green-700 text-slate-950 font-extrabold border-none rounded-sm px-3 py-1 cursor-pointer text-xs disabled:opacity-60">
-                    {taking ? "Saving…" : "✓ Confirm"}
-                  </button>
-                  <button onClick={() => setTakeOpen(null)} className="bg-transparent text-slate-400 hover:text-slate-200 border border-slate-700 hover:border-slate-600 rounded-sm px-3 py-1 cursor-pointer text-xs">Cancel</button>
-                </div>
-                <div className="text-emerald-400/80 text-[11px] mt-1 leading-5">
-                  {Number(tEntry) > 0 && Number(tTarget) > Number(tEntry)
-                    ? <>🐢 BUY — <strong>1:2 Risk:Reward</strong> · Entry ₹{tEntry} · Stop ₹{tStop} · Target ₹{tTarget}</>
-                    : Number(tEntry) > 0 && Number(tTarget) < Number(tEntry)
-                    ? <>🐢 SELL — <strong>1:1.2 Risk:Reward</strong> · Entry ₹{tEntry} · Stop ₹{tStop} · Target ₹{tTarget}</>
-                    : <>🐢 Turtle Soup — BUY side: 1:2 RR · SELL side: 1:1.2 RR</>
                   }
                 </div>
               </div>
@@ -387,14 +245,6 @@ export function Ledger({
   };
 
   const renderTodayPlan = (r: LedgerRow) => {
-    if (playbackDate && r.openPosition && !r.liveSignal) {
-      return (
-        <div className="mb-3 p-3 rounded-lg bg-amber-500/5 border border-amber-500/35 font-mono text-xs text-amber-100">
-          <div className="font-bold text-amber-400 mb-1">🟡 Position OPEN on this date</div>
-          <div>Strategy is date pe position mein tha — entry <strong>{r.openPosition.entryDate}</strong> @ <strong>₹{Math.round(r.openPosition.entryPrice)}</strong>. Exit abhi future mein hai — din aage badha ke dekho.</div>
-        </div>
-      );
-    }
     if (r.liveSignal && r.livePrice) {
       const entry = r.livePrice;
       const isM2 = r.strategyId === "m2_rounding_bottom";
@@ -421,7 +271,6 @@ export function Ledger({
         const emergencyStop = Math.round(entry * 0.92);
         return (
           <div className="mb-3 p-3 rounded-lg bg-green-500/5 border border-green-500/35 font-mono text-xs text-green-100">
-            <div className="font-bold text-green-400 mb-1">📍 {playbackDate ? `Signal on ${playbackDate} (as-of close that day)` : "LIVE setup (as of latest close)"}</div>
             <div>Entry zone ≈ <strong>₹{Math.round(entry)}</strong> · ConnorsRSI(3,2,100) &lt; 15 + Price &gt; EMA(200)</div>
             <div className="mt-1">Exit: <strong>ConnorsRSI &gt; 90 hone pe close pe exit</strong> (avg hold ~46 days)</div>
             <div className="mt-1">Emergency floor: <strong>₹{emergencyStop}</strong> (−8% from entry) — sirf emergency me, indicator exit hi primary hai</div>
@@ -454,7 +303,6 @@ export function Ledger({
       const rr = risk > 0 ? (reward / risk).toFixed(1) : "—";
       return (
         <div className="mb-3 p-3 rounded-lg bg-green-500/5 border border-green-500/35 font-mono text-xs text-green-100">
-          <div className="font-bold text-green-400 mb-1">📍 {playbackDate ? `Signal on ${playbackDate} (as-of close that day)` : "LIVE setup (as of latest close)"}</div>
           <div>Entry zone ≈ <strong>₹{entry}</strong> · Stop-loss <strong>₹{stop}</strong> (−{stopPct}%) · Target ≈ <strong>₹{target}</strong> ({targetLabel}) · R:R ≈ 1:{rr}</div>
           {exitLabel && <div className="mt-1 text-yellow-300/80">{exitLabel}</div>}
           <div className="text-slate-500 text-[10px] mt-1.5">Enter only if price is still near the entry zone. Backtest-derived levels — educational, not financial advice.</div>
