@@ -1102,8 +1102,7 @@ app.get("/api/kite/historical", async (req, res) => {
       { headers: { "X-Kite-Version": "3", "Authorization": `token ${KITE_API_KEY}:${kiteAccessToken}` } }
     );
     const instrText = await instrRes.text();
-    const lines = instrText.split("
-").filter(l => l.includes(`,${symbol},`));
+    const lines = instrText.split("\n").filter((l: string) => l.includes(`,${symbol},`));
     if (!lines.length) return res.status(404).json({ ok: false, error: `${symbol} not found on NSE` });
 
     const instrToken = lines[0].split(",")[0];
