@@ -53,7 +53,13 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [liveOnly, setLiveOnly] = useState(false);
   const [m6SectorFilter, setM6SectorFilter] = useState(false);
-  const [m6EfficientMode, setM6EfficientMode] = useState(false); // Efficient Capital Allocation toggle
+  const [m6EfficientMode, setM6EfficientMode] = useState(false);
+  const [kiteConnected, setKiteConnected] = useState<boolean | null>(null);
+
+  // Check Kite connection status on load
+  useEffect(() => {
+    fetch("/api/kite/status").then(r => r.json()).then(d => setKiteConnected(d.connected)).catch(() => setKiteConnected(false));
+  }, []); // Efficient Capital Allocation toggle
   const [historyStart, setHistoryStart] = useState(() => {
     const d = new Date();
     d.setFullYear(d.getFullYear() - 5); // default: last 5 years; pick any older date to go further back
@@ -522,6 +528,15 @@ export default function App() {
             </button>
           )}
           {pbErr && !pbOn && <span className="text-xs text-[#ef4444] font-mono max-w-[280px]">{pbErr}</span>}
+          {!pbOn && (
+            <a
+              href="/api/kite/login"
+              title={kiteConnected ? "Kite connected hai — aaj ke liye login complete" : "Kite se login karo — historical + live data milega"}
+              className={`flex items-center gap-1.5 font-semibold px-3 py-2 rounded-lg text-xs transition-all cursor-pointer active:scale-[0.97] ${kiteConnected ? "bg-[#0d2b1f] border border-[#10b981] text-[#10b981]" : "bg-[#1a1f2e] border border-[#2a3142] text-[#8e9ba9] hover:border-[#fbbf24] hover:text-[#fbbf24]"}`}
+            >
+              {kiteConnected ? "🟢 Kite Connected" : "🔴 Kite Login"}
+            </a>
+          )}
           {!pbOn && (
             <button
               type="button"
