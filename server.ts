@@ -987,7 +987,7 @@ app.post("/api/admin/clear-playback", (_req, res) => {
       fs.rmSync(pbDir, { recursive: true, force: true });
       fs.mkdirSync(pbDir, { recursive: true });
     }
-    log("🗑️ Playback cache cleared by admin");
+    console.log("🗑️ Playback cache cleared by admin");
     res.json({ ok: true, msg: "Playback cache cleared! Fresh snapshots will be generated on next autoplay." });
   } catch (err) {
     res.status(500).json({ ok: false, error: String(err) });
