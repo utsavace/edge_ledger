@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { Ledger, type LedgerRow } from "./components/Ledger.tsx";
 import { MyTrades } from "./components/MyTrades.tsx";
-// DivergenceChart removed — M4 Weekly Divergence module removed
-// ExitSchemeComparison removed — replaced by ConnorsRSI (M6) module
 
 interface Meta {
   needsScan?: boolean;
@@ -32,14 +30,12 @@ interface Bucketed {
 const TABS = [
   { n: 1, key: "stoch", label: "StochRSI Scanner" },
   { n: 6, key: "connors", label: "ConnorsRSI Oversold" },
-  { n: 7, key: "turtle", label: "Turtle Soup" },
   { n: 5, key: "journal", label: "My Trades" },
 ] as const;
 
 const DESC: Record<number, string> = {
   1: "Stochastic RSI Trend Filter — StochRSI K crosses D below 15 + ADX > 20 → next bar open pe entry. Exit: K crosses D above 80. 10yr zero-lookahead OOS validated: PF 1.71, Win 58.3%, 6/6 years profitable. Gate: 10 trades / 55% WR / 1.5 PF. 🔵 Live signal filter: ADX ≥ 29 wale stocks hi dikhenge.",
   6: "ConnorsRSI(3,2,100) oversold scanner — Price > EMA(200) + ConnorsRSI < 15 → next bar open pe entry. Exit: ConnorsRSI > 90. 10yr OOS: PF 2.15, Win 67.6%, 9/10 years profitable. Gate: 10 trades / 60% WR / 1.5 PF. 🔵 ADX ≥ 29 live filter. ⚡ Efficient Mode: CRSI<10 → exit>80, avg hold 16 days vs 72 days — capital velocity 35% better!",
-  7: "Turtle Soup (Connors & Raschke, Street Smarts 1995) — New 20-day low bana + previous 20-day low 4+ sessions pehle tha → false breakdown reversal. BUY: entry above previous low, SL today's low, Target 1:2 RR. SELL: entry below previous high, SL today's high, Target 1:1.2 RR. No gate — all stocks. 10yr OOS: PF 1.64, Win 64.4%, 10/10 years profitable.",
   5: "Tumhara personal trade journal — jis stock ka trade lena ho usse yahan save karo. App rooz check karta hai ki exit signal aaya ya nahi aur status dikhata hai: Holding ✅ ya EXIT ⚠️.",
 };
 
@@ -54,154 +50,10 @@ export default function App() {
   const [liveOnly, setLiveOnly] = useState(false);
   const [m6SectorFilter, setM6SectorFilter] = useState(false);
   const [m6EfficientMode, setM6EfficientMode] = useState(false);
-  const [kiteConnected, setKiteConnected] = useState<boolean | null>(null);
 
   // Check Kite connection status on load
-  useEffect(() => {
-    fetch("/api/kite/status").then(r => r.json()).then(d => setKiteConnected(d.connected)).catch(() => setKiteConnected(false));
-  }, []); // Efficient Capital Allocation toggle
-  const [historyStart, setHistoryStart] = useState(() => {
-    const d = new Date();
-    d.setFullYear(d.getFullYear() - 5); // default: last 5 years; pick any older date to go further back
-    return d.toISOString().slice(0, 10);
-  });
-  const [sortField, setSortField] = useState<keyof LedgerRow | null>(null);
-  const [sortAsc, setSortAsc] = useState(false);
-  const [journalCount, setJournalCount] = useState<number | null>(null);
-
-  // Divergence Chart state
-
-  // Load journal count once for the tab badge
-  useEffect(() => {
-    fetch(`/api/trades?t=${Date.now()}`)
-      .then((r) => r.json())
-      .then((d) => setJournalCount(Array.isArray(d.trades) ? d.trades.length : 0))
-      .catch(() => setJournalCount(0));
-  }, []);
-
-  // ==================== PLAYBACK (TIME MACHINE) ====================
-  const [pbOn, setPbOn] = useState(false);
-  const [pbDate, setPbDate] = useState<string | null>(null);
-  const [pbAxis, setPbAxis] = useState<string[]>([]);
-  const [pbSnap, setPbSnap] = useState<any | null>(null);
-  const [pbLoading, setPbLoading] = useState(false);
-  const [pbErr, setPbErr] = useState("");
-  const [pbPlaying, setPbPlaying] = useState(false);
-  const [pbSpeedMs, setPbSpeedMs] = useState(1200);
-  const [pbJournalCount, setPbJournalCount] = useState<number | null>(null);
-  const [pbOpenCount, setPbOpenCount] = useState(0);   // OPEN/PENDING practice trades → drives step-checks
-  const [pbPauseMsg, setPbPauseMsg] = useState("");    // "auto-paused because your trade resolved" banner
-  const pbFetchSeq = useRef(0);
-  const pbCheckBusy = useRef(false);
-  const pbCheckSeq = useRef(0); // FIX: sequence number to drop stale trade-check responses
-
-  const enterPlayback = async () => {
-    setPbErr("");
-    try {
-      const r = await fetch(`/api/playback/axis?t=${Date.now()}`);
-      const d = await r.json();
-      if (!r.ok || !d.ok || !Array.isArray(d.dates) || !d.dates.length) {
-        setPbErr(d.error || "Playback data nahi mili — pehle ek fresh scan chalao (naya engine playback files banata hai).");
-        return;
-      }
-      setPbAxis(d.dates);
-      setPbOn(true);
-      // sensible default start: ~1 year back from the data end
-      const idx = Math.max(0, d.dates.length - 252);
-      setPbDate(d.dates[idx]);
-      fetch(`/api/playback/trades?t=${Date.now()}`)
-        .then((x) => x.json())
-        .then((x) => {
-          const list = Array.isArray(x.trades) ? x.trades : [];
-          setPbJournalCount(list.length);
-          setPbOpenCount(list.filter((t: any) => t.status === "OPEN" || t.status === "PENDING").length);
-        })
-        .catch(() => setPbJournalCount(0));
-    } catch {
-      setPbErr("Playback axis load nahi hui — server chal raha hai?");
-    }
-  };
-
-  const exitPlayback = () => {
-    setPbOn(false);
-    setPbPlaying(false);
-    setPbDate(null);
-    setPbSnap(null);
-    setPbErr("");
-    setPbPauseMsg("");
-  };
-
-  // Snap an arbitrary calendar date (picker can select holidays) to the nearest trading day ≤ it
-  const snapToAxis = (d: string): string => {
-    if (!pbAxis.length) return d;
-    if (d <= pbAxis[0]) return pbAxis[0];
-    let best = pbAxis[0];
-    for (const x of pbAxis) { if (x <= d) best = x; else break; }
-    return best;
-  };
-
-  const pbStep = (dir: 1 | -1) => {
-    if (!pbDate || !pbAxis.length) return;
-    const i = pbAxis.indexOf(pbDate);
-    const j = (i === -1 ? pbAxis.findIndex((x) => x > pbDate) - 1 : i) + dir;
-    if (j < 0 || j >= pbAxis.length) { setPbPlaying(false); return; }
-    setPbDate(pbAxis[j]);
-  };
-
-  // Fetch the as-of snapshot whenever the virtual date changes (stale responses dropped)
-  useEffect(() => {
-    if (!pbOn || !pbDate) return;
-    const seq = ++pbFetchSeq.current;
-    setPbLoading(true);
-    fetch(`/api/playback/snapshot?date=${pbDate}&t=${Date.now()}`)
-      .then((r) => r.json())
-      .then((d) => {
-        if (seq !== pbFetchSeq.current) return; // an older request finishing late — ignore
-        if (d.ok) { setPbSnap(d); setPbErr(""); } else setPbErr(d.error || "snapshot fail");
-      })
-      .catch(() => { if (seq === pbFetchSeq.current) setPbErr("Snapshot load fail"); })
-      .finally(() => { if (seq === pbFetchSeq.current) setPbLoading(false); });
-  }, [pbOn, pbDate]);
 
   // Auto-play: advance one trading day per tick; stops at the end of data
-  useEffect(() => {
-    if (!pbPlaying || !pbOn) return;
-    const t = setInterval(() => pbStep(1), pbSpeedMs);
-    return () => clearInterval(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pbPlaying, pbOn, pbSpeedMs, pbDate]);
-
-  // PRACTICE-TRADE WATCHDOG: on every virtual-date move
-  useEffect(() => {
-    if (!pbOn || !pbDate || pbOpenCount === 0 || pbCheckBusy.current) return;
-    pbCheckBusy.current = true;
-    const seq = ++pbCheckSeq.current; // FIX: capture sequence before async
-    fetch("/api/playback/trades/check", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ asOfDate: pbDate })
-    })
-      .then((r) => r.json())
-      .then((d) => {
-        if (seq !== pbCheckSeq.current) return; // FIX: drop stale responses
-        if (!d.ok) return;
-        const list: any[] = Array.isArray(d.trades) ? d.trades : [];
-        setPbJournalCount(list.length);
-        setPbOpenCount(list.filter((t) => t.status === "OPEN" || t.status === "PENDING").length);
-        if (d.updated > 0) {
-          setPbPlaying(false);
-          const resolved = list
-            .filter((t) => t.exitDate && t.status !== "OPEN" && t.status !== "PENDING")
-            .sort((a, b) => (b.exitDate || "").localeCompare(a.exitDate || ""))
-            .slice(0, d.updated)
-            .map((t) => `${t.symbol.replace(".NS", "")} ${t.status === "TARGET_HIT" ? "🎯 TARGET" : t.status === "SL_HIT" ? "🛑 SL" : "exit"} (${t.returnPct >= 0 ? "+" : ""}${t.returnPct}%)`)
-            .join(", ");
-          setPbPauseMsg(`⏸ Auto-paused — ${resolved}. Details "My Trades" tab mein.`);
-        }
-      })
-      .catch(() => { /* watchdog is best-effort; the My Trades tab re-checks anyway */ })
-      .finally(() => { pbCheckBusy.current = false; });
-  }, [pbOn, pbDate, pbOpenCount]);
 
   // --- Period P&L Summary ---
   const [showPnl, setShowPnl] = useState(false);
@@ -407,7 +259,6 @@ export default function App() {
   };
 
   const filteredAndSortedRows = useMemo(() => {
-    const sourceRows: LedgerRow[] = pbOn ? ((pbSnap?.["module" + tab] as LedgerRow[]) ?? []) : rows;
     let result = [...sourceRows];
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -451,13 +302,9 @@ export default function App() {
       });
     }
     return result;
-  }, [rows, searchQuery, liveOnly, sortField, sortAsc, pbOn, pbSnap, tab, m6SectorFilter, m6EfficientMode]);
+  }, [rows, searchQuery, liveOnly, sortField, sortAsc, tab, m6SectorFilter, m6EfficientMode]);
 
-  const g = meta?.gate;
-  const needsScan = meta?.needsScan && !pbOn; // playback has its own data source
-  const effCounts = pbOn ? pbSnap?.counts : meta?.counts;
-  const sourceRowsLen = pbOn ? ((pbSnap?.["module" + tab] as LedgerRow[] | undefined)?.length ?? 0) : rows.length;
-  const pbIdx = pbOn && pbDate ? pbAxis.indexOf(pbDate) : -1;
+  const g = meta?.gate;  const needsScan = meta?.needsScan;  const effCounts = meta?.counts;
 
   return (
     <div className="app">
@@ -469,94 +316,14 @@ export default function App() {
           <span className="sub">Nifty 500 · Full-History Backtest · Gross Returns</span>
         </div>
         <div className="flex items-center gap-4 flex-wrap">
-          {import.meta.env.DEV && !pbOn && (
-            <button 
-              type="button"
-              className="flex items-center gap-2 bg-gradient-to-r from-[#fbbf24] to-[#d97706] text-[#080b11] font-extrabold px-4.5 py-2.5 rounded-lg text-sm transition-all hover:scale-[1.03] cursor-pointer hover:shadow-[0_4px_15px_rgba(251,191,36,0.35)] active:scale-[0.97]"
-              onClick={startScanning}
-              disabled={scanStatus.isScanning}
-            >
-              <span className="flex h-2.5 w-2.5 relative">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-black"></span>
-              </span>
-              Fetch Fresh Data
-            </button>
-          )}
-          {import.meta.env.DEV && !pbOn && (
-            <button
-              type="button"
-              className="flex items-center gap-2 bg-[#151b27] border border-[#fbbf24]/40 text-[#fbbf24] font-bold px-4 py-2.5 rounded-lg text-sm transition-all hover:bg-[#1b2230] cursor-pointer active:scale-[0.97] disabled:opacity-50"
-              onClick={scanAndPublish}
-              disabled={scanStatus.isScanning || publishing}
-            >
-              {scanStatus.isScanning ? "Scanning…" : publishing ? "Publishing…" : "🔄 Scan & Publish"}
-            </button>
-          )}
-          {import.meta.env.DEV && publishMsg && (
-            <span className="text-xs text-[#8e9ba9] font-mono max-w-[260px] truncate" title={publishMsg}>{publishMsg}</span>
-          )}
-          {!pbOn && (
-            <button
-              type="button"
-              className="flex items-center gap-2 bg-[#151b27] border border-[#10b981]/50 text-[#22c55e] font-bold px-4 py-2.5 rounded-lg text-sm transition-all hover:bg-[#1b2230] cursor-pointer active:scale-[0.97] disabled:opacity-50"
-              onClick={startScanning}
-              disabled={scanStatus.isScanning}
-              title="Turant naya scan chalao — 500 stocks ka latest data fetch karke cache refresh karega (~25-30s lagega)"
-            >
-              {scanStatus.isScanning
-                ? `⏳ Scanning… ${scanStatus.scanned}/500`
-                : "🔄 Refresh Now"}
-            </button>
-          )}
-          {!pbOn ? (
-            <button
-              type="button"
-              className="flex items-center gap-2 bg-[#151b27] border border-[#a855f7]/50 text-[#c084fc] font-bold px-4 py-2.5 rounded-lg text-sm transition-all hover:bg-[#1b2230] cursor-pointer active:scale-[0.97]"
-              onClick={enterPlayback}
-              title="Time machine: dashboard ko kisi bhi past date pe le jao"
-            >
-              🕰 Playback
-            </button>
+          {import.meta.env.DEV && (
           ) : (
             <button
               type="button"
               className="flex items-center gap-2 bg-gradient-to-r from-[#a855f7] to-[#7c3aed] text-white font-extrabold px-4 py-2.5 rounded-lg text-sm transition-all hover:scale-[1.03] cursor-pointer active:scale-[0.97]"
-              onClick={exitPlayback}
             >
-              ⏹ Return to Today
             </button>
-          )}
-          {pbErr && !pbOn && <span className="text-xs text-[#ef4444] font-mono max-w-[280px]">{pbErr}</span>}
-          {!pbOn && (
-            <a
-              href="/api/kite/login"
-              title={kiteConnected ? "Kite connected hai — aaj ke liye login complete" : "Kite se login karo — historical + live data milega"}
-              className={`flex items-center gap-1.5 font-semibold px-3 py-2 rounded-lg text-xs transition-all cursor-pointer active:scale-[0.97] ${kiteConnected ? "bg-[#0d2b1f] border border-[#10b981] text-[#10b981]" : "bg-[#1a1f2e] border border-[#2a3142] text-[#8e9ba9] hover:border-[#fbbf24] hover:text-[#fbbf24]"}`}
-            >
-              {kiteConnected ? "🟢 Kite Connected" : "🔴 Kite Login"}
-            </a>
-          )}
-          {!pbOn && (
-            <button
-              type="button"
-              title="Playback cache clear karo — purane stale signals hatane ke liye. Fresh scan ke baad autoplay se naye snapshots banenge."
-              className="flex items-center gap-1.5 bg-[#1a1f2e] border border-[#2a3142] text-[#8e9ba9] font-semibold px-3 py-2 rounded-lg text-xs transition-all hover:border-[#ef4444] hover:text-[#ef4444] cursor-pointer active:scale-[0.97]"
-              onClick={async () => {
-                if (!confirm("Playback cache clear karna chahte ho? Sabhi purane snapshots delete ho jaayenge aur fresh scan se naye banenge.")) return;
-                try {
-                  const r = await fetch("/api/admin/clear-playback", { method: "POST" });
-                  const d = await r.json();
-                  if (d.ok) alert("✅ Playback cache cleared! Ab fresh scan karo aur autoplay se naye snapshots banenege.");
-                  else alert("❌ Error: " + d.error);
-                } catch {
-                  alert("❌ Server se connect nahi ho paya.");
-                }
-              }}
-            >
-              🗑️ Clear Playback Cache
-            </button>
-          )}
+          )}</span>}
           <div className="gatestamp">
             <span className="gate-label">STRICT GATE</span>
             <span className="gate-rules">
@@ -567,29 +334,6 @@ export default function App() {
       </header>
 
       {/* 🕰 TIME MACHINE control strip */}
-      {pbOn && (
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px", padding: "10px 14px", margin: "0 0 14px", borderRadius: "10px", background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.45)", fontFamily: "monospace", fontSize: "13px" }}>
-          <span style={{ fontWeight: 800, color: "#c084fc", letterSpacing: "0.04em" }}>🕰 PLAYBACK MODE</span>
-          <input
-            type="date"
-            value={pbDate || ""}
-            min={pbAxis[60] || pbAxis[0]}
-            max={pbAxis[pbAxis.length - 1]}
-            onChange={(e) => { setPbPlaying(false); setPbDate(snapToAxis(e.target.value)); }}
-            style={{ background: "#0f141c", border: "1px solid #2a3342", color: "#e6edf5", borderRadius: "6px", padding: "5px 9px", fontFamily: "monospace" }}
-          />
-          <button className="toggle-filter-btn" onClick={() => { setPbPlaying(false); pbStep(-1); }} title="Ek trading din peeche">⏮ Prev</button>
-          <button className="toggle-filter-btn" onClick={() => { setPbPlaying(false); pbStep(1); }} title="Ek trading din aage">Next ⏭</button>
-          <button
-            className="toggle-filter-btn"
-            onClick={() => { setPbPauseMsg(""); setPbPlaying(!pbPlaying); }}
-            style={{ background: pbPlaying ? "rgba(168,85,247,0.25)" : undefined, borderColor: "rgba(168,85,247,0.5)", color: "#c084fc", fontWeight: 700 }}
-          >
-            {pbPlaying ? "⏸ Pause" : "▶ Auto-play"}
-          </button>
-          <select
-            value={pbSpeedMs}
-            onChange={(e) => setPbSpeedMs(Number(e.target.value))}
             style={{ background: "#0f141c", border: "1px solid #2a3342", color: "#e6edf5", borderRadius: "6px", padding: "5px 8px", fontFamily: "monospace" }}
             title="Auto-play speed"
           >
@@ -598,14 +342,11 @@ export default function App() {
             <option value={500}>⏩ Fast (0.5s/din)</option>
             <option value={150}>🚀 Turbo (0.15s/din)</option>
           </select>
-          <span style={{ color: "#8e9ba9" }}>
-            Din {pbIdx >= 0 ? pbIdx + 1 : "—"} / {pbAxis.length}
+          
             {pbLoading && <span style={{ marginLeft: "8px", color: "#c084fc" }}>⏳</span>}
-          </span>
-          {pbErr && <span style={{ color: "#ef4444" }}>{pbErr}</span>}
+          </span>}></span>}
           {pbPauseMsg && <span style={{ color: "#fbbf24", fontWeight: 700 }}>{pbPauseMsg}</span>}
           <span style={{ flexBasis: "100%", color: "#576575", fontSize: "11px" }}>
-            Dashboard bilkul waisa hai jaisa {pbDate} ke close pe hota — us date ke baad ka koi data engine ko nahi dikhta. Practice trades "My Trades" tab mein alag journal mein track hote hain.
           </span>
         </div>
       )}
@@ -636,48 +377,6 @@ export default function App() {
           <div className="stat-card highlights">
             <span className="stat-label">Passed Gates</span>
             <span className="stat-value text-gold">
-              {pbOn ? ((effCounts?.module1 || 0) + (effCounts?.module6 || 0) + (effCounts?.module7 || 0)) : (meta.passed ?? ((effCounts?.module1 || 0) + (effCounts?.module6 || 0) + (effCounts?.module7 || 0)))} <span className="stat-value-sub">Total</span>
-            </span>
-            <div className="stat-split-bar flex h-2 rounded-full overflow-hidden mt-1.5">
-              <span className="stat-split-1 bg-amber-500" style={{ width: `${((effCounts?.module1 || 0) / (((effCounts?.module1 || 0) + (effCounts?.module6 || 0) + (effCounts?.module7 || 0)) || 1)) * 100}%` }} />
-              <div className="stat-split-6 bg-cyan-400" style={{ width: `${((effCounts?.module6 || 0) / (((effCounts?.module1 || 0) + (effCounts?.module6 || 0) + (effCounts?.module7 || 0)) || 1)) * 100}%` }} />
-              <div className="stat-split-7 bg-emerald-500" style={{ width: `${((effCounts?.module7 || 0) / (((effCounts?.module1 || 0) + (effCounts?.module6 || 0) + (effCounts?.module7 || 0)) || 1)) * 100}%` }} />
-            </div>
-            <span className="stat-sub text-xs">
-              StochRSI: {effCounts?.module1 ?? 0} · ConnorsRSI: {effCounts?.module6 ?? 0} · Turtle Soup: {effCounts?.module7 ?? 0}
-            </span>
-          </div>
-        </section>
-      )}
-
-      {pbOn ? (
-        <div className="last-updated-bar" style={{ borderColor: "rgba(168,85,247,0.4)", color: "#c084fc" }}>
-          <span className="pulse-indicator" style={{ background: "#a855f7" }} />
-          Time machine active — dashboard as of {pbDate} (close). Aaj ke data pe wapas jaane ke liye "Return to Today" dabao.
-        </div>
-      ) : meta && meta.generatedAt && (
-        <div className="last-updated-bar">
-          <span className="pulse-indicator" />
-          Data generated at: {new Date(meta.generatedAt).toLocaleString()} ({meta.elapsedSec}s compute time)
-        </div>
-      )}
-
-      <nav className="tabs">
-        {TABS.map((t) => (
-          <button
-            key={t.key}
-            className={"tab" + (tab === t.n ? " active" : "")}
-            onClick={() => setTab(t.n)}
-          >
-            <span className="num">{String(t.n).padStart(2, "0")}</span>
-            <span className="tab-text">{t.label}</span>
-            {t.n === 5 ? (
-              (pbOn ? pbJournalCount : journalCount) !== null && <span className="count">{pbOn ? pbJournalCount : journalCount}</span>
-            ) : (
-              effCounts && (
-                <span className="count">{(effCounts as any)["module" + t.n] ?? 0}</span>
-              )
-            )}
           </button>
         ))}
       </nav>
@@ -749,7 +448,7 @@ export default function App() {
               </div>
             </div>
           )}
-          {!needsScan && !pbOn && rows.length > 0 && (
+          {!needsScan && rows.length > 0 && (
             <div style={{ padding: "4px 0 12px" }}>
               <button className="toggle-filter-btn" onClick={() => setShowPnl(!showPnl)} style={{ fontSize: "12px" }}>
                 📊 Period P&L Summary {showPnl ? "▲" : "▼"}
@@ -791,16 +490,10 @@ export default function App() {
 
         {tab === 5 ? (
           <MyTrades
-            key={pbOn ? "pb" : "live"}
-            mode={pbOn ? "playback" : "live"}
-            asOfDate={pbOn ? (pbDate || undefined) : undefined}
-            onCountChange={pbOn ? setPbJournalCount : setJournalCount}
+            mode="live"
+            onCountChange={setJournalCount}
           />
-        ) : tab === 6 ? (
-          pbOn && !pbSnap ? (
-            <div className="state">
-              <div className="spinner" />
-              {pbErr ? pbErr : `Building the dashboard as of ${pbDate}…`}
+        ) : tab === 6 ? ("Loading..."
             </div>
           ) : (
             <Ledger
@@ -813,12 +506,9 @@ export default function App() {
               historyStart={historyStart}
             />
           )
-        ) : pbOn && !pbSnap ? (
-          <div className="state">
-            <div className="spinner" />
-            {pbErr ? pbErr : `Building the dashboard as of ${pbDate}…`}
+        ) :"Loading..."
           </div>
-        ) : loading && !pbOn ? (
+        ) : loading ? (
           <div className="state">
             <div className="spinner" />
             Loading ledger database...
@@ -873,7 +563,7 @@ export default function App() {
           <div className="state empty-state">
             {rows.length === 0 ? (
               <>
-                <div className="big">{pbOn ? `${pbDate} ko koi stock gate pass nahi karta tha` : "Zero stocks cleared the gate"}</div>
+                <div className="big">"Zero stocks cleared the gate"}</div>
                 <p>
                   Applying gate constraints: Win Rate &ge; {g ? g.minWinRate * 100 : 60}% and Profit Factor &ge;{" "}
                   {g ? g.minProfitFactor : 2} with {g ? g.minOosTrades : 10}+ minimum trades.
@@ -909,8 +599,8 @@ export default function App() {
             onSort={handleSort}
             historyStart={historyStart}
             strictHighlight={false}
-            playbackDate={pbOn ? pbDate : null}
-            onTradeTaken={() => (pbOn ? (setPbJournalCount((c) => (c ?? 0) + 1), setPbOpenCount((c) => c + 1)) : setJournalCount((c) => (c ?? 0) + 1))}
+            
+            onTradeTaken={() => setJournalCount((c) => (c ?? 0) + 1)}
           />
         )}
 
