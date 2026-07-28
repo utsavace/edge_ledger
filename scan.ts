@@ -616,6 +616,105 @@ function emptyStats(): BacktestStats {
   };
 }
 
+// ── M1: StochRSI Trend Filter Backtest ──────────────────────────────────────
+// Entry: StochRSI K crosses D upward below 15 + ADX > 20 → next bar open
+// Exit:  K crosses D downward above 80 / -8% emergency floor
+function backtestStochRSI(
+  ohlcv: OHLCV[],
+  rsi: number[],
+  stochRsi: StochRSIResult,
+  adx: number[]
+): BacktestStats {
+  const closes = ohlcv.map(d => d.close);
+  const opens  = ohlcv.map(d => d.open);
+  const dates  = ohlcv.map(d => d.date);
+  const n = closes.length;
+
+  const trades: number[] = [];
+  const tradeLog: TradeRecord[] = [];
+  const signals: BacktestStats["signals"] = [];
+  let inPosition = false, pendingEntry = false;
+  let entryPrice = 0, entryDate = "";
+  let signalOnLastBar = false;
+  let liveSignal = false;
+
+  for (let i = 50; i < n; i++) {
+    if (!inPosition) {
+      if (pendingEntry) {
+        inPosition = true; entryPrice = opens[i]; entryDate = dates[i];
+        pendingEntry = false; continue;
+      }
+      const k  = stochRsi.k[i]   || 0, d  = stochRsi.d[i]   || 0;
+      const kp = stochRsi.k[i-1] || 0, dp = stochRsi.d[i-1] || 0;
+      const trigger = k > d && kp <= dp && k < 15 && (adx[i] || 0) > 20;
+      if (trigger) {
+        signals.push({ d: dates[i], p: Math.round(closes[i] * 100) / 100 });
+        if (i === n - 1) { signalOnLastBar = true; }
+        else { pendingEntry = true; }
+      }
+    } else {
+      const k  = stochRsi.k[i]   || 0, d  = stochRsi.d[i]   || 0;
+      const kp = stochRsi.k[i-1] || 0, dp = stochRsi.d[i-1] || 0;
+      const exitSignal = k < d && kp >= dp && k > 80;
+      const floorHit   = closes[i] < entryPrice * 0.92;
+      if (exitSignal || floorHit || i === n - 1) {
+        const exitPrice = floorHit ? entryPrice * 0.92 : closes[i];
+        const returnPct = ((exitPrice - entryPrice) / entryPrice) * 100 - COST_PCT;
+        trades.push(returnPct);
+        tradeLog.push({
+          entryDate, exitDate: dates[i],
+          entryPrice: Math.round(entryPrice * 100) / 100,
+          exitPrice:  Math.round(exitPrice  * 100) / 100,
+          returnPct:  Math.round(returnPct  * 100) / 100,
+          win: returnPct > 0,
+          ...(!exitSignal && !floorHit ? { forced: true } : {})
+        });
+        inPosition = false;
+      }
+    }
+  }
+
+  // ADX live filter
+  liveSignal = signalOnLastBar;
+  const latestADX = adx[adx.length - 1] || 0;
+  if (ADX_LIVE_FILTER > 0 && liveSignal && latestADX < ADX_LIVE_FILTER) liveSignal = false;
+
+  const numTrades = trades.length;
+  const lastP = closes[n - 1] || 0;
+  if (numTrades === 0) return {
+    passed: false, passedBase: false, passedStrict: false,
+    numTrades: 0, winRatePct: 0, profitFactor: 1.0, avgReturnPct: 0,
+    maxDrawdownPct: 0, lastEntryPrice: lastP, lastExitPrice: lastP, lastReturnPct: 0,
+    liveSignal, livePrice: liveSignal ? lastP : null, liveStop: null, liveTarget: null,
+    tradeLog: [], signals
+  };
+
+  const wins    = trades.filter(r => r > 0);
+  const losses  = trades.filter(r => r <= 0);
+  const gp      = wins.reduce((a, b) => a + b, 0);
+  const gl      = Math.abs(losses.reduce((a, b) => a + b, 0));
+  const pf      = Math.min(gl === 0 ? (gp > 0 ? NO_LOSS_PF_CAP : 1) : gp / gl, NO_LOSS_PF_CAP);
+  const wr      = (wins.length / numTrades) * 100;
+  const avg     = trades.reduce((a, b) => a + b, 0) / numTrades;
+  const last    = tradeLog[tradeLog.length - 1];
+  const passed  = numTrades >= MIN_TRADES && wr >= MIN_WIN_RATE && pf >= MIN_PROFIT_FACTOR;
+  const passedStrict = numTrades >= STRICT_TRADES && wr >= MIN_WIN_RATE && pf >= STRICT_PF;
+
+  return {
+    passed, passedBase: passed, passedStrict,
+    numTrades, winRatePct: Math.round(wr * 10) / 10,
+    profitFactor: Math.round(pf * 100) / 100,
+    avgReturnPct: Math.round(avg * 100) / 100,
+    maxDrawdownPct: 0,
+    lastEntryPrice: last?.entryPrice ?? lastP,
+    lastExitPrice:  last?.exitPrice  ?? lastP,
+    lastReturnPct:  last?.returnPct  ?? 0,
+    liveSignal, livePrice: liveSignal ? lastP : null, liveStop: null, liveTarget: null,
+    tradeLog, signals
+  };
+}
+
+
 export function computeAllStrategyStats(ohlcv: OHLCV[]): Record<string, BacktestStats> {
   const closes = ohlcv.map(d => d.close);
   const rsi = calculateRSI(closes, 14);
@@ -629,6 +728,7 @@ export function computeAllStrategyStats(ohlcv: OHLCV[]): Record<string, Backtest
   const atr = calculateATR(ohlcv, 14);
 
   const out: Record<string, BacktestStats> = {};
+  out["m1_stoch_rsi"] = backtestStochRSI(ohlcv, rsi, stochRsi, adx);
   out["m6_connors_rsi"] = backtestConnorsRSI(ohlcv);
   out["m6_connors_rsi_strict"] = backtestConnorsRSIStrict(ohlcv);
   return out;
@@ -674,8 +774,7 @@ export async function runScan(
   const module6Rows: any[] = [];
   const module3Rows: any[] = [];
   const allScanned: any[] = [];
-  // strategyCounts updated inline per stock — no need to iterate allScanned again
-  const strategyCounts: Record<string, { passes: number; pfValues: number[] }> = {};  // m3BestResults: per-stock stratResults for the best global strategy (determined after loop)
+  const strategyCounts: Record<string, { passes: number; pfValues: number[] }> = {};
   const m3StockResults: Array<{ stock: any; isReal: boolean; stratResults: Record<string, any> }> = [];
 
   // ✅ FIX #4: Track real vs synthetic data
@@ -700,20 +799,14 @@ export async function runScan(
         isReal = false;
       }
 
-      const r2 = (x: number) => Math.round(x * 100) / 100;      } catch { /* best-effort */ }
+      const stratResults = computeAllStrategyStats(ohlcv);
 
-      const stratResults = computeAllStrategyStats(ohlcv);        for (const sid of Object.keys(stratResults)) {
-          strategies[sid] = { trades: stratResults[sid].tradeLog, signals: stratResults[sid].signals };
-        }        const dts = ohlcv.map(c => c.date);
+      const dts = ohlcv.map(c => c.date);
         if (isReal && dts.length > axisDates.length) axisDates = dts;
         if (!isReal && dts.length > axisDatesSynth.length) axisDatesSynth = dts;
       } catch { /* best-effort */ }
 
-      // Track real vs synthetic
-      if (isReal) { realDataCount++; log(`📈 [LIVE] ${stock.symbol} ✓`); }
-      else { syntheticCount++; log(`⚠️ [SYNTHETIC] ${stock.symbol}`); }
 
-      // Dynamic Strategy Optimization      let bestB1Stats = stratResults[bestB1Strat.id];      }
 
       const closes = ohlcv.map(d => d.close);
       allScanned.push({ stock, isReal }); // only store minimal data for index.json
@@ -726,31 +819,34 @@ export async function runScan(
         log(`⚠️ [FALLBACK DATA] ${stock.symbol} (synthetic)`);
       }
 
-      if (bestB1Stats.passed && bestB1Stats.numTrades >= STRICT_TRADES && bestB1Stats.profitFactor >= STRICT_PF) {
+      // MODULE 1: StochRSI Trend Filter
+      const b1 = stratResults["m1_stoch_rsi"];
+      const m1passed = b1 && b1.passed && b1.numTrades >= STRICT_TRADES && b1.profitFactor >= STRICT_PF;
+      if (m1passed) {
         passedCount++;
         module1Rows.push({
           symbol: stock.symbol,
           name: stock.name,
-          strategyId: bestB1Strat.id,
-          trades: bestB1Stats.tradeLog,
-          strategyLabel: bestB1Strat.label,
-          entryCond: bestB1Strat.entry,
-          exitCond: bestB1Strat.exit,
-          lastEntryPrice: bestB1Stats.lastEntryPrice,
-          lastExitPrice: bestB1Stats.lastExitPrice,
-          lastReturnPct: bestB1Stats.lastReturnPct,
-          winRatePct: bestB1Stats.winRatePct,
-          profitFactor: bestB1Stats.profitFactor,
-          numTrades: bestB1Stats.numTrades,
-          avgReturnPct: bestB1Stats.avgReturnPct,
-          maxDrawdownPct: bestB1Stats.maxDrawdownPct,
-          liveSignal: bestB1Stats.liveSignal,
-          livePrice: bestB1Stats.livePrice,
-          liveStop: bestB1Stats.liveStop ?? null,
-          liveTarget: bestB1Stats.liveTarget ?? null,
+          strategyId: "m1_stoch_rsi",
+          trades: b1.tradeLog,
+          strategyLabel: "Stochastic RSI Trend Filter",
+          entryCond: "StochRSI K crosses D below 15 with ADX > 20 → next bar open",
+          exitCond: "StochRSI K crosses D above 80 — emergency floor: -8% from entry",
+          lastEntryPrice: b1.lastEntryPrice,
+          lastExitPrice: b1.lastExitPrice,
+          lastReturnPct: b1.lastReturnPct,
+          winRatePct: b1.winRatePct,
+          profitFactor: b1.profitFactor,
+          numTrades: b1.numTrades,
+          avgReturnPct: b1.avgReturnPct,
+          maxDrawdownPct: b1.maxDrawdownPct,
+          liveSignal: b1.liveSignal,
+          livePrice: b1.livePrice,
+          liveStop: b1.liveStop ?? null,
+          liveTarget: b1.liveTarget ?? null,
           isSynthetic: !isReal
         });
-        log(`✨ [RSI/STOCHRSI PASS] ${stock.symbol}: ${bestB1Strat.label} (PF: ${bestB1Stats.profitFactor}, WR: ${bestB1Stats.winRatePct}%)`);
+        log(\`✨ [RSI/STOCHRSI PASS] \${stock.symbol}: StochRSI (PF: \${b1.profitFactor}, WR: \${b1.winRatePct}%)\`);
       }
 
       // MODULE 4: RSI Divergence — gate requires min 7 trades & 50% win rate
