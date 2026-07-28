@@ -979,6 +979,21 @@ app.post("/api/playback/trades/reset", (_req, res) => {
 
 // LOCAL DEV ONLY: commit & push the freshly scanned public/cache so the deployed app can pick it up.
 // Disabled in production (serverless containers have no git remote / credentials).
+// Clear playback cache — forces fresh snapshots on next autoplay
+app.post("/api/admin/clear-playback", (_req, res) => {
+  try {
+    const pbDir = path.join(process.cwd(), "data", "playback");
+    if (fs.existsSync(pbDir)) {
+      fs.rmSync(pbDir, { recursive: true, force: true });
+      fs.mkdirSync(pbDir, { recursive: true });
+    }
+    log("🗑️ Playback cache cleared by admin");
+    res.json({ ok: true, msg: "Playback cache cleared! Fresh snapshots will be generated on next autoplay." });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: String(err) });
+  }
+});
+
 app.post("/api/publish", (_req, res) => {
   if (process.env.NODE_ENV === "production") {
     return res.status(403).json({ ok: false, output: "Publish is disabled in production. Run it from local dev." });
